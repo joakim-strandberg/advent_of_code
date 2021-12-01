@@ -1,5 +1,6 @@
 with Ada.Text_IO;
 with Ada.Command_Line;
+with Ada.Exceptions;
 
 with Advent_Of_Code_2021;
 pragma Elaborate_All (Advent_Of_Code_2021);
@@ -50,12 +51,13 @@ procedure Main is
       end case;
    end Run;
 
-   type Day_Type is range 1 .. 24;
+   type Day_Type is new Integer range 1 .. 24;
 
    Day : Day_Type;
 begin
-   if Command_Line.Argument_Count < 4 then
+   if Command_Line.Argument_Count < 3 then
       Print_Help;
+      return;
    end if;
 
    declare
@@ -66,39 +68,40 @@ begin
       if Arg1 = "2021" then
          begin
             Day := Day_Type'Value (Arg2);
-            if Day < 2 then
-               if Arg3 = "1" then
-                  if
-                    Command_Line.Argument_Count > 3 and then
-                    Command_Line.Argument (4) = "test"
-                  then
-                     Run (AoC_2021_Day_1_Part_One_Test);
-                  else
-                     Run (AoC_2021_Day_1_Part_One);
-                  end if;
-               elsif Arg3 = "2" then
-                  if
-                    Command_Line.Argument_Count > 3 and then
-                    Command_Line.Argument (4) = "test"
-                  then
-                     Run (AoC_2021_Day_1_Part_Two_Test);
-                  else
-                     Run (AoC_2021_Day_1_Part_Two);
-                  end if;
-               else
-                  Text_IO.Put_Line ("The challenge has invalid value " & Arg3);
-               end if;
-            else
-               Text_IO.Put_Line ("The day had invalid value " & Arg2);
-               Text_IO.Put_Line ("Valid values are 1 to 1");
-               Print_Help;
-            end if;
          exception
-            when others =>
-               Text_IO.Put_Line ("The day had invalid value " & Arg2);
+            when Error : others =>
+               Text_IO.Put_Line ("The day had invalid value '" & Arg2 & "'");
                Print_Help;
                return;
          end;
+         if Day < 2 then
+            if Arg3 = "1" then
+               if
+                 Command_Line.Argument_Count > 3 and then
+                 Command_Line.Argument (4) = "test"
+               then
+                  Run (AoC_2021_Day_1_Part_One_Test);
+               else
+                  Run (AoC_2021_Day_1_Part_One);
+               end if;
+            elsif Arg3 = "2" then
+               if
+                 Command_Line.Argument_Count > 3 and then
+                 Command_Line.Argument (4) = "test"
+               then
+                  Run (AoC_2021_Day_1_Part_Two_Test);
+               else
+                  Run (AoC_2021_Day_1_Part_Two);
+               end if;
+            else
+               Text_IO.Put_Line ("The challenge has invalid value " & Arg3);
+            end if;
+         else
+            Text_IO.Put_Line ("The day had invalid value " & Arg2);
+            Text_IO.Put_Line ("Valid values are 1 to 1");
+            Print_Help;
+         end if;
+
       else
          Text_IO.Put_Line ("The year had invalid value " & Arg1);
          Print_Help;
