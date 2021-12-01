@@ -16,20 +16,20 @@ arguments to read about instructions on how to use it.
 
 ## Building the source code using the GNAT compiler
 Execute:
-'''
+```
 gprbuild -p -P main.gpr
-'''
+```
 ## Building the source code using GNAT 3.14p (from 2004)
 Execute:
-'''
+```
 gnatmake main.adb
-'''
+```
 ## Building the source code using Janus/Ada
 Execute:
-'''
+```
 cmain.bat
-'''
+```
 This will produce a file called bmain.bat. Execute:
-'''
+```
 bmain.bat
-'''
+```
