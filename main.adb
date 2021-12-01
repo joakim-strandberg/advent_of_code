@@ -75,6 +75,7 @@ begin
                return;
          end;
          if Day < 2 then
+
             if Arg3 = "1" then
                if
                  Command_Line.Argument_Count > 3 and then
