@@ -38,16 +38,16 @@ procedure Main is
    begin
       case Application is
          when AoC_2021_Day_1_Part_One =>
-            Advent_Of_Code_2021.Day_1_Part_One.Run;
+            Advent_Of_Code_2021.Day_1.Part_One.Run;
 
          when AoC_2021_Day_1_Part_One_Test =>
-            Advent_Of_Code_2021.Day_1_Part_One.Run_Test_Suite;
+            Advent_Of_Code_2021.Day_1.Part_One.Run_Test_Suite;
 
          when AoC_2021_Day_1_Part_Two =>
-            Advent_Of_Code_2021.Day_1_Part_Two.Run;
+            Advent_Of_Code_2021.Day_1.Part_Two.Run;
 
          when AoC_2021_Day_1_Part_Two_Test =>
-            Advent_Of_Code_2021.Day_1_Part_Two.Run_Test_Suite;
+            Advent_Of_Code_2021.Day_1.Part_Two.Run_Test_Suite;
       end case;
    end Run;
 
