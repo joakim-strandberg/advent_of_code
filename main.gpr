@@ -1,0 +1,47 @@
+project Main is
+   for Object_Dir  use "obj_gnat";
+   for Source_Dirs use (".");
+   for Exec_Dir    use ".";
+
+   type Mode_Type is ("debug", "release");
+   Mode : Mode_Type := external ("mode", "debug");
+
+   for Main use ("main.adb");
+
+   package Builder is
+      for Executable ("main.adb") use "aoc";
+   end Builder;
+
+   package Compiler is
+      case Mode is
+         when "debug" =>
+            for Switches ("Ada") use
+              ("-gnatm80",
+               "-g");
+         when "release" =>
+            for Switches ("Ada") use
+              ("-O2",
+               "-flto");
+      end case;
+   end Compiler;
+
+   package Binder is
+
+      case Mode is
+         when "debug" =>
+            for Switches ("Ada") use ("-Es");
+         when "release" => null;
+      end case;
+
+   end Binder;
+
+   package Linker is
+      case Mode is
+         when "debug" =>
+            for Switches ("Ada") use ("");
+         when "release" =>
+            for Switches ("Ada") use ("-flto");
+      end case;
+   end Linker;
+
+end Main;
