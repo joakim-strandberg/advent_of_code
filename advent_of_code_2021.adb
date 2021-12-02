@@ -2,8 +2,54 @@ with Stdx;
 pragma Elaborate_All (Stdx);
 
 with Ada.Text_IO;
+with Ada.Strings;
+with Ada.Strings.Fixed;
 
 package body Advent_Of_Code_2021 is
+
+   Infinite_Loop_Max : constant := 10_000_000;
+   --  Maximum number of iterations allowed in this application.
+
+   package Text_IO renames Ada.Text_IO;
+
+   --  This generic has been introduced during day 2 of Advent of Code 2021.
+   --  Inspired by the code from day 1.
+   generic
+      Type State_Type is private;
+      with procedure Handle_Line (State : in out State_Type;
+                                  Line  : String);
+   procedure Read_Line_By_Line_From_File (State     : in out State_Type;
+                                          File_Name : String);
+
+   procedure Read_Line_By_Line_From_File (State     : in out State_Type;
+                                          File_Name : String) is
+      Input_File : Text_IO.File_Type;
+
+      Is_Infinite_Loop_Detected : Boolean := True;
+   begin
+      Text_IO.Open (File => Input_File,
+                    Mode => Text_IO.In_File,
+                    Name => File_Name);
+      begin
+         for I in Nat32 range 1 .. Infinite_Loop_Max loop
+            if Text_IO.End_Of_File (Input_File) then
+               Is_Infinite_Loop_Detected := False;
+               exit;
+            end if;
+            Handle_Line (State, Text_IO.Get_Line (Input_File));
+         end loop;
+
+         if Is_Infinite_Loop_Detected then
+            raise Constraint_Error with "infinite loop detected";
+         end if;
+
+         Text_IO.Close (Input_File);
+      exception
+         when others =>
+            Text_IO.Close (Input_File);
+            raise;
+      end;
+   end Read_Line_By_Line_From_File;
 
    package body Day_1 is
 
@@ -23,14 +69,9 @@ package body Advent_Of_Code_2021 is
 
          function Count_Increases (Depth : Depth_Array) return Nat32;
 
-         Infinite_Loop_Max : constant := 10_000_000;
-         --  Maximum number of iterations allowed in this application.
-
       end Internal;
 
       package body Internal is
-
-         package Text_IO renames Ada.Text_IO;
 
          function Count_Increases (Depth : Depth_Array) return Nat32 is
             Result : Nat32 := 0;
@@ -115,8 +156,6 @@ package body Advent_Of_Code_2021 is
 
       package body Part_One is
 
-         package Text_IO renames Ada.Text_IO;
-
          procedure Run is
             File_Name : constant String := "day_01_input.txt";
 
@@ -192,8 +231,6 @@ package body Advent_Of_Code_2021 is
       end Part_One;
 
       package body Part_Two is
-
-         package Text_IO renames Ada.Text_IO;
 
          procedure Make_Sliding_Window
            (Window : in out Depth_Array;
@@ -284,5 +321,110 @@ package body Advent_Of_Code_2021 is
       end Part_Two;
 
    end Day_1;
+
+   package body Day_2 is
+
+      type Movement_Type is (Forward,
+                             Down,
+                             Up);
+
+      package body Part_One is
+
+         type Position_Type is record
+            X : Nat32;
+            Y : Nat32;
+         end record;
+
+         procedure Read_Line (Position : in out Position_Type;
+                              Line     : String)
+         is
+            Sep : constant Integer := Ada.Strings.Fixed.Index (Source  => Line,
+                                                               Pattern => " ");
+
+            Direction : constant Movement_Type
+              := Movement_Type'Value (Line (Line'First .. Sep - 1));
+            Value : constant Nat32
+              := Nat32'Value (Line (Sep + 1 .. Line'Last));
+         begin
+            --  Text_IO.Put_Line ("1:" & Line (1 .. Sep - 1));
+            --  Text_IO.Put_Line ("2:" & Line (Sep + 1 .. Line'Last));
+            case Direction is
+               when Forward => Position.X := Position.X + Value;
+               when Up      => Position.Y := Position.Y - Value;
+               when Down    => Position.Y := Position.Y + Value;
+            end case;
+         end Read_Line;
+
+         procedure Read_Values_From_File is new
+           Read_Line_By_Line_From_File (State_Type  => Position_Type,
+                                        Handle_Line => Read_Line);
+
+         procedure Run is
+            File_Name : constant String := "day_02_input.txt";
+            Position : Position_Type := (X => 0, Y => 0);
+         begin
+            Read_Values_From_File (Position, File_Name);
+            Text_IO.Put_Line (Nat32'Image
+                              (Position.X * Position.Y));
+         end Run;
+
+         procedure Run_Test_Suite is
+         begin
+            Text_IO.Put_Line ("This puzzle has no test suite");
+         end Run_Test_Suite;
+
+      end Part_One;
+
+      package body Part_Two is
+
+         type Position_Type is record
+            X   : Nat32;
+            Y   : Nat32;
+            Aim : Nat32;
+         end record;
+
+         procedure Read_Line (Position : in out Position_Type;
+                              Line     : String)
+         is
+            Sep : constant Integer :=
+              Ada.Strings.Fixed.Index (Source  => Line,
+                                       Pattern => " ");
+
+            Direction : Movement_Type
+              := Movement_Type'Value (Line (Line'First .. Sep - 1));
+            Value : Nat32
+              := Nat32'Value (Line (Sep + 1 .. Line'Last));
+         begin
+            case Direction is
+               when Forward =>
+                  Position.X := Position.X + Value;
+                  Position.Y := Position.Y + Value * Position.Aim;
+               when Up      => Position.Aim := Position.Aim - Value;
+               when Down    => Position.Aim := Position.Aim + Value;
+            end case;
+         end Read_Line;
+
+         procedure Read_Values_From_File is new
+           Read_Line_By_Line_From_File (State_Type  => Position_Type,
+                                        Handle_Line => Read_Line);
+
+         procedure Run is
+            File_Name : constant String := "day_02_input.txt";
+
+            Position : Position_Type := (X => 0, Y => 0, Aim => 0);
+         begin
+            Read_Values_From_File (Position, File_Name);
+            Text_IO.Put_Line (Nat32'Image
+                              (Position.X * Position.Y));
+         end Run;
+
+         procedure Run_Test_Suite is
+         begin
+            Text_IO.Put_Line ("This puzzle has no test suite");
+         end Run_Test_Suite;
+
+      end Part_Two;
+
+   end Day_2;
 
 end Advent_Of_Code_2021;

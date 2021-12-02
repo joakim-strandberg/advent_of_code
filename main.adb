@@ -32,7 +32,11 @@ procedure Main is
    type Application_To_Run is (AoC_2021_Day_1_Part_One,
                                AoC_2021_Day_1_Part_One_Test,
                                AoC_2021_Day_1_Part_Two,
-                               AoC_2021_Day_1_Part_Two_Test);
+                               AoC_2021_Day_1_Part_Two_Test,
+                               AoC_2021_Day_2_Part_One,
+                               AoC_2021_Day_2_Part_One_Test,
+                               AoC_2021_Day_2_Part_Two,
+                               AoC_2021_Day_2_Part_Two_Test);
 
    procedure Run (Application : Application_To_Run) is
    begin
@@ -48,6 +52,18 @@ procedure Main is
 
          when AoC_2021_Day_1_Part_Two_Test =>
             Advent_Of_Code_2021.Day_1.Part_Two.Run_Test_Suite;
+
+         when AoC_2021_Day_2_Part_One =>
+            Advent_Of_Code_2021.Day_2.Part_One.Run;
+
+         when AoC_2021_Day_2_Part_One_Test =>
+            Advent_Of_Code_2021.Day_2.Part_One.Run_Test_Suite;
+
+         when AoC_2021_Day_2_Part_Two =>
+            Advent_Of_Code_2021.Day_2.Part_Two.Run;
+
+         when AoC_2021_Day_2_Part_Two_Test =>
+            Advent_Of_Code_2021.Day_2.Part_Two.Run_Test_Suite;
       end case;
    end Run;
 
@@ -75,24 +91,43 @@ begin
                return;
          end;
          if Day < 2 then
-
             if Arg3 = "1" then
                if
                  Command_Line.Argument_Count > 3 and then
                  Command_Line.Argument (4) = "test"
                then
-                  Run (AoC_2021_Day_1_Part_One_Test);
+                  case Day is
+                     when 1 => Run (AoC_2021_Day_1_Part_One_Test);
+                     when 2 => Run (AoC_2021_Day_2_Part_One_Test);
+                     when 3 .. 24 =>
+                        Text_IO.Put_Line ("No puzzle implemented.");
+                  end case;
                else
-                  Run (AoC_2021_Day_1_Part_One);
+                  case Day is
+                     when 1 => Run (AoC_2021_Day_1_Part_One);
+                     when 2 => Run (AoC_2021_Day_2_Part_One);
+                     when 3 .. 24 =>
+                        Text_IO.Put_Line ("No puzzle implemented.");
+                  end case;
                end if;
             elsif Arg3 = "2" then
                if
                  Command_Line.Argument_Count > 3 and then
                  Command_Line.Argument (4) = "test"
                then
-                  Run (AoC_2021_Day_1_Part_Two_Test);
+                  case Day is
+                     when 1 => Run (AoC_2021_Day_1_Part_Two_Test);
+                     when 2 => Run (AoC_2021_Day_2_Part_Two_Test);
+                     when 3 .. 24 =>
+                        Text_IO.Put_Line ("No puzzle implemented.");
+                  end case;
                else
-                  Run (AoC_2021_Day_1_Part_Two);
+                  case Day is
+                     when 1 => Run (AoC_2021_Day_1_Part_Two);
+                     when 2 => Run (AoC_2021_Day_2_Part_Two);
+                     when 3 .. 24 =>
+                        Text_IO.Put_Line ("No puzzle implemented.");
+                  end case;
                end if;
             else
                Text_IO.Put_Line ("The challenge has invalid value " & Arg3);
@@ -102,7 +137,6 @@ begin
             Text_IO.Put_Line ("Valid values are 1 to 1");
             Print_Help;
          end if;
-
       else
          Text_IO.Put_Line ("The year had invalid value " & Arg1);
          Print_Help;
