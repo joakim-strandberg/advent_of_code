@@ -14,6 +14,15 @@ Building the source code will produce the executable aoc on Mac OS X and
 Linux but will be aoc.exe on Windows. Execute the aoc application without
 arguments to read about instructions on how to use it.
 
+## Building the source code using Janus/Ada
+Execute:
+```
+cmain.bat
+```
+This will produce a file called bmain.bat. Execute:
+```
+bmain.bat
+```
 ## Building the source code using the GNAT compiler
 Execute:
 ```
@@ -23,13 +32,4 @@ gprbuild -p -P main.gpr
 Execute:
 ```
 gnatmake main.adb
-```
-## Building the source code using Janus/Ada
-Execute:
-```
-cmain.bat
-```
-This will produce a file called bmain.bat. Execute:
-```
-bmain.bat
 ```
