@@ -15,6 +15,10 @@ Linux but will be aoc.exe on Windows. Execute the aoc application without
 arguments to read about instructions on how to use it.
 
 ## Building the source code using Janus/Ada
+Open a command terminal in Windows. Make sure the "obj_janus" directory exists:
+```
+mkdir obj_janus
+```
 Execute:
 ```
 cmain.bat
