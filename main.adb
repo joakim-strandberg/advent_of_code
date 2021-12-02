@@ -90,52 +90,46 @@ begin
                Print_Help;
                return;
          end;
-         if Day < 2 then
-            if Arg3 = "1" then
-               if
-                 Command_Line.Argument_Count > 3 and then
-                 Command_Line.Argument (4) = "test"
-               then
-                  case Day is
-                     when 1 => Run (AoC_2021_Day_1_Part_One_Test);
-                     when 2 => Run (AoC_2021_Day_2_Part_One_Test);
-                     when 3 .. 24 =>
-                        Text_IO.Put_Line ("No puzzle implemented.");
-                  end case;
-               else
-                  case Day is
-                     when 1 => Run (AoC_2021_Day_1_Part_One);
-                     when 2 => Run (AoC_2021_Day_2_Part_One);
-                     when 3 .. 24 =>
-                        Text_IO.Put_Line ("No puzzle implemented.");
-                  end case;
-               end if;
-            elsif Arg3 = "2" then
-               if
-                 Command_Line.Argument_Count > 3 and then
-                 Command_Line.Argument (4) = "test"
-               then
-                  case Day is
-                     when 1 => Run (AoC_2021_Day_1_Part_Two_Test);
-                     when 2 => Run (AoC_2021_Day_2_Part_Two_Test);
-                     when 3 .. 24 =>
-                        Text_IO.Put_Line ("No puzzle implemented.");
-                  end case;
-               else
-                  case Day is
-                     when 1 => Run (AoC_2021_Day_1_Part_Two);
-                     when 2 => Run (AoC_2021_Day_2_Part_Two);
-                     when 3 .. 24 =>
-                        Text_IO.Put_Line ("No puzzle implemented.");
-                  end case;
-               end if;
+         if Arg3 = "1" then
+            if
+              Command_Line.Argument_Count > 3 and then
+              Command_Line.Argument (4) = "test"
+            then
+               case Day is
+                  when 1 => Run (AoC_2021_Day_1_Part_One_Test);
+                  when 2 => Run (AoC_2021_Day_2_Part_One_Test);
+                  when 3 .. 24 =>
+                     Text_IO.Put_Line ("No puzzle implemented.");
+               end case;
             else
-               Text_IO.Put_Line ("The challenge has invalid value " & Arg3);
+               case Day is
+                  when 1 => Run (AoC_2021_Day_1_Part_One);
+                  when 2 => Run (AoC_2021_Day_2_Part_One);
+                  when 3 .. 24 =>
+                     Text_IO.Put_Line ("No puzzle implemented.");
+               end case;
+            end if;
+         elsif Arg3 = "2" then
+            if
+              Command_Line.Argument_Count > 3 and then
+              Command_Line.Argument (4) = "test"
+            then
+               case Day is
+                  when 1 => Run (AoC_2021_Day_1_Part_Two_Test);
+                  when 2 => Run (AoC_2021_Day_2_Part_Two_Test);
+                  when 3 .. 24 =>
+                     Text_IO.Put_Line ("No puzzle implemented.");
+               end case;
+            else
+               case Day is
+                  when 1 => Run (AoC_2021_Day_1_Part_Two);
+                  when 2 => Run (AoC_2021_Day_2_Part_Two);
+                  when 3 .. 24 =>
+                     Text_IO.Put_Line ("No puzzle implemented.");
+               end case;
             end if;
          else
-            Text_IO.Put_Line ("The day had invalid value " & Arg2);
-            Text_IO.Put_Line ("Valid values are 1 to 1");
-            Print_Help;
+            Text_IO.Put_Line ("The challenge has invalid value " & Arg3);
          end if;
       else
          Text_IO.Put_Line ("The year had invalid value " & Arg1);
