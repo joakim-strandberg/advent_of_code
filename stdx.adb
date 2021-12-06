@@ -145,6 +145,80 @@ package body Stdx is
 
    end Test_Defs2;
 
+   package body Text_Files is
+
+      package Text_IO renames Ada.Text_IO;
+
+      function Count_Lines_In_File (File_Name : String) return Nat32 is
+         Input_File : Text_IO.File_Type;
+
+         Result : Nat32 := 0;
+
+         Is_Infinite_Loop_Detected : Boolean := True;
+      begin
+         Text_IO.Open (File => Input_File,
+                       Mode => Text_IO.In_File,
+                       Name => File_Name);
+         begin
+            for I in Nat32 range 1 .. Stda.Infinite_Loop_Max loop
+               if Text_IO.End_Of_File (Input_File) then
+                  Is_Infinite_Loop_Detected := False;
+                  exit;
+               end if;
+               declare
+                  Line : constant String := Text_IO.Get_Line (Input_File);
+               begin
+                  Result := Result + 1;
+               end;
+            end loop;
+
+            if Is_Infinite_Loop_Detected then
+               raise Constraint_Error with "infinite loop detected";
+            end if;
+
+            Text_IO.Close (Input_File);
+         exception
+            when others =>
+               Text_IO.Close (Input_File);
+               raise;
+         end;
+
+         return Result;
+      end Count_Lines_In_File;
+
+      procedure Read_Line_By_Line (Parser    : in out Text_Parser;
+                                             File_Name : String)
+      is
+         Input_File : Text_IO.File_Type;
+
+         Is_Infinite_Loop_Detected : Boolean := True;
+      begin
+         Text_IO.Open (File => Input_File,
+                       Mode => Text_IO.In_File,
+                       Name => File_Name);
+         begin
+            for I in Nat32 range 1 .. Stda.Infinite_Loop_Max loop
+               if Text_IO.End_Of_File (Input_File) then
+                  Is_Infinite_Loop_Detected := False;
+                  exit;
+               end if;
+               Handle_Line (Parser, Text_IO.Get_Line (Input_File));
+            end loop;
+
+            if Is_Infinite_Loop_Detected then
+               raise Constraint_Error with "infinite loop detected";
+            end if;
+
+            Text_IO.Close (Input_File);
+         exception
+            when others =>
+               Text_IO.Close (Input_File);
+               raise;
+         end;
+      end Read_Line_By_Line;
+
+   end Text_Files;
+
 --     procedure Open (File        : in out Input_File;
 --                     Name        : in     String;
 --                     Call_Result : in out Subprogram_Call_Result)

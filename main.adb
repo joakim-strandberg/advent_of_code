@@ -19,53 +19,12 @@ procedure Main is
       Text_IO.Put_Line ("1. The year (possible value is only 2021)");
       Text_IO.Put_Line ("2. The day (valid values are 1 to 24)");
       Text_IO.Put_Line ("3. Challenge (valid values are 1 or 2)");
-      Text_IO.Put_Line ("4. Optional value 'test' means run test suite");
       Text_IO.New_Line;
       Text_IO.Put_Line ("For example, to run the application for challenge");
       Text_IO.Put_Line ("two on the third of December 2021 execute:");
       Text_IO.Put_Line ("aoc 2021 3 2");
-      Text_IO.New_Line;
-      Text_IO.Put_Line ("Or run the associated test suite:");
-      Text_IO.Put_Line ("aoc 2021 3 2 test");
+
    end Print_Help;
-
-   type Application_To_Run is (AoC_2021_Day_1_Part_One,
-                               AoC_2021_Day_1_Part_One_Test,
-                               AoC_2021_Day_1_Part_Two,
-                               AoC_2021_Day_1_Part_Two_Test,
-                               AoC_2021_Day_2_Part_One,
-                               AoC_2021_Day_2_Part_One_Test,
-                               AoC_2021_Day_2_Part_Two,
-                               AoC_2021_Day_2_Part_Two_Test);
-
-   procedure Run (Application : Application_To_Run) is
-   begin
-      case Application is
-         when AoC_2021_Day_1_Part_One =>
-            Advent_Of_Code_2021.Day_1.Part_One.Run;
-
-         when AoC_2021_Day_1_Part_One_Test =>
-            Advent_Of_Code_2021.Day_1.Part_One.Run_Test_Suite;
-
-         when AoC_2021_Day_1_Part_Two =>
-            Advent_Of_Code_2021.Day_1.Part_Two.Run;
-
-         when AoC_2021_Day_1_Part_Two_Test =>
-            Advent_Of_Code_2021.Day_1.Part_Two.Run_Test_Suite;
-
-         when AoC_2021_Day_2_Part_One =>
-            Advent_Of_Code_2021.Day_2.Part_One.Run;
-
-         when AoC_2021_Day_2_Part_One_Test =>
-            Advent_Of_Code_2021.Day_2.Part_One.Run_Test_Suite;
-
-         when AoC_2021_Day_2_Part_Two =>
-            Advent_Of_Code_2021.Day_2.Part_Two.Run;
-
-         when AoC_2021_Day_2_Part_Two_Test =>
-            Advent_Of_Code_2021.Day_2.Part_Two.Run_Test_Suite;
-      end case;
-   end Run;
 
    type Day_Type is new Integer range 1 .. 24;
 
@@ -91,43 +50,27 @@ begin
                return;
          end;
          if Arg3 = "1" then
-            if
-              Command_Line.Argument_Count > 3 and then
-              Command_Line.Argument (4) = "test"
-            then
-               case Day is
-                  when 1 => Run (AoC_2021_Day_1_Part_One_Test);
-                  when 2 => Run (AoC_2021_Day_2_Part_One_Test);
-                  when 3 .. 24 =>
-                     Text_IO.Put_Line ("No puzzle implemented.");
-               end case;
-            else
-               case Day is
-                  when 1 => Run (AoC_2021_Day_1_Part_One);
-                  when 2 => Run (AoC_2021_Day_2_Part_One);
-                  when 3 .. 24 =>
-                     Text_IO.Put_Line ("No puzzle implemented.");
-               end case;
-            end if;
+            case Day is
+               when 1 => Advent_Of_Code_2021.Day_1.Part_One.Run;
+               when 2 => Advent_Of_Code_2021.Day_2.Part_One.Run;
+               when 3 => Advent_Of_Code_2021.Day_3.Part_One.Run;
+               when 4 => Advent_Of_Code_2021.Day_4.Part_One.Run;
+               when 5 => Advent_Of_Code_2021.Day_5.Part_One.Run;
+               when 6 => Advent_Of_Code_2021.Day_6.Part_One.Run;
+               when 7 .. 24 =>
+                  Text_IO.Put_Line ("No puzzle implemented.");
+            end case;
          elsif Arg3 = "2" then
-            if
-              Command_Line.Argument_Count > 3 and then
-              Command_Line.Argument (4) = "test"
-            then
-               case Day is
-                  when 1 => Run (AoC_2021_Day_1_Part_Two_Test);
-                  when 2 => Run (AoC_2021_Day_2_Part_Two_Test);
-                  when 3 .. 24 =>
-                     Text_IO.Put_Line ("No puzzle implemented.");
-               end case;
-            else
-               case Day is
-                  when 1 => Run (AoC_2021_Day_1_Part_Two);
-                  when 2 => Run (AoC_2021_Day_2_Part_Two);
-                  when 3 .. 24 =>
-                     Text_IO.Put_Line ("No puzzle implemented.");
-               end case;
-            end if;
+            case Day is
+               when 1 => Advent_Of_Code_2021.Day_1.Part_Two.Run;
+               when 2 => Advent_Of_Code_2021.Day_2.Part_Two.Run;
+               when 3 => Advent_Of_Code_2021.Day_3.Part_Two.Run;
+               when 4 => Advent_Of_Code_2021.Day_4.Part_Two.Run;
+               when 5 => Advent_Of_Code_2021.Day_5.Part_Two.Run;
+               when 6 => Advent_Of_Code_2021.Day_6.Part_Two.Run;
+               when 7 .. 24 =>
+                  Text_IO.Put_Line ("No puzzle implemented.");
+            end case;
          else
             Text_IO.Put_Line ("The challenge has invalid value " & Arg3);
          end if;

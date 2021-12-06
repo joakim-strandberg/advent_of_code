@@ -85,6 +85,19 @@ package Stdx is
 
    end Test_Defs2;
 
+   package Text_Files is
+
+      function Count_Lines_In_File (File_Name : String) return Nat32;
+
+      generic
+         Type Text_Parser (<>) is limited private;
+         with procedure Handle_Line (Parser : in out Text_Parser;
+                                     Line  : String);
+      procedure Read_Line_By_Line (Parser    : in out Text_Parser;
+                                   File_Name : String);
+
+   end Text_Files;
+
    package Text_IO is
 
       type Io_Target is abstract tagged limited null record;

@@ -6,6 +6,27 @@ with Interfaces;
 
 package Stda is
 
+   Infinite_Loop_Max : constant := (2**31 - 1);
+   --  Maximum number of iterations allowed in this application.
+   --  Instead of while loops, use the following construct in order
+   --  to detect the existence of infinite loops.
+   --
+   --  declare
+   --     Is_Infinite_Loop_Detected : Boolean := True;
+   --  begin
+   --     for I in Nat32 range 1 .. Infinite_Loop_Max loop
+   --        if ... then
+   --           Is_Infinite_Loop_Detected := False;
+   --           exit;
+   --        end if;
+   --        ...
+   --     end loop;
+   --
+   --     if Is_Infinite_Loop_Detected then
+   --        raise Constraint_Error with "infinite loop detected";
+   --     end if;
+   --  end;
+
    package Types is
 
       type Int32 is range -2**31 + 1 .. (2**31 - 1);
@@ -134,6 +155,17 @@ package Stda is
 
    end Bounded_Strings;
 
+   --  declare
+   --     First : constant Vector_Index := Vector_Index'First;
+   --     Last  : constant Vectors.Extended_Index
+   --       := Vectors.Last_Index (V);
+   --     Item : Item_Type;
+   --  begin
+   --     for I in Vector_Index range First .. Last loop
+   --        Item := Vectors.Element (V, I);
+   --        ...
+   --     end loop;
+   --  end;
    generic
       type Element_Type is private;
       type Index is range <>;
@@ -465,6 +497,19 @@ package Stda is
    --  Taking these considerations into account, the Latin_1 package
    --  is therefore defined as a nested package.
    package Latin_1 is
+
+      type Index_Interval is record
+         First : Natural;
+         Last  : Natural;
+      end record;
+
+      type Index_Interval_Array is array
+        (Positive range <>) of Index_Interval;
+
+      function Get_Intervals (Line : String;
+                              Sep  : Character)
+                              return Index_Interval_Array;
+      --  Is used to split a String into substrings.
 
       subtype Character_As_Int32 is Types.Int32 range 0 .. 255;
 

@@ -194,6 +194,37 @@ package body Stda is
 
       use type Types.Int32;
 
+      function Get_Intervals (Line : String;
+                               Sep  : Character)
+                               return Index_Interval_Array is
+         Comma_Count : Natural := 0;
+      begin
+         for I in Line'Range loop
+            if Line (I) = Sep then
+               Comma_Count := Comma_Count + 1;
+            end if;
+         end loop;
+
+         declare
+            Result : Index_Interval_Array (1 .. Comma_Count + 1);
+            Current : Positive := 1;
+            Prev_Index : Positive := Line'First;
+         begin
+            for I in Line'Range loop
+               if Line (I) = Sep then
+                  --  Text_IO.Put_Line (Line (Prev_Index .. I - 1));
+                  Result (Current).First := Prev_Index;
+                  Result (Current).Last  := I - 1;
+                  Prev_Index := I + 1;
+                  Current := Current + 1;
+                  Result (Current).First := Prev_Index;
+               end if;
+            end loop;
+            Result (Result'Last).Last := Line'Last;
+            return Result;
+         end;
+      end Get_Intervals;
+
       function To_Int32 (Value : Character) return Character_As_Int32 is
          Result : Character_As_Int32;
       begin

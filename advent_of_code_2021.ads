@@ -84,6 +84,8 @@ package Advent_Of_Code_2021 is
 
          procedure Run;
 
+      private
+
          procedure Run_Test_Suite;
 
       end Part_One;
@@ -141,6 +143,8 @@ package Advent_Of_Code_2021 is
 
          procedure Run;
 
+      private
+
          procedure Run_Test_Suite;
 
       end Part_Two;
@@ -196,8 +200,6 @@ package Advent_Of_Code_2021 is
 
          procedure Run;
 
-         procedure Run_Test_Suite;
-
       end Part_One;
 
       --  Based on your calculations, the planned course doesn't seem to make
@@ -240,10 +242,397 @@ package Advent_Of_Code_2021 is
 
          procedure Run;
 
-         procedure Run_Test_Suite;
-
       end Part_Two;
 
    end Day_2;
+
+   package Day_3 is
+
+      --  Day 3: Binary Diagnostic
+      --
+      --  The submarine has been making some odd creaking noises,
+      --  so you ask it to produce a diagnostic report just in case.
+      --
+      --  The diagnostic report (your puzzle input) consists of a list
+      --  of binary numbers which, when decoded properly, can tell you
+      --  many useful things about the conditions of the submarine.
+      --  The first parameter to check is the power consumption.
+      --
+      --  You need to use the binary numbers in the diagnostic report
+      --  to generate two new binary numbers (called the gamma rate and
+      --  the epsilon rate). The power consumption can then be found
+      --  by multiplying the gamma rate by the epsilon rate.
+      --
+      --  Each bit in the gamma rate can be determined by finding
+      --  the most common bit in the corresponding position of all numbers
+      --  in the diagnostic report. For example, given the following
+      --  diagnostic report:
+      --
+      --  00100
+      --  11110
+      --  10110
+      --  10111
+      --  10101
+      --  01111
+      --  00111
+      --  11100
+      --  10000
+      --  11001
+      --  00010
+      --  01010
+      --
+      --  Considering only the first bit of each number, there are
+      --  five 0 bits and seven 1 bits. Since the most common bit is 1,
+      --  the first bit of the gamma rate is 1.
+      --
+      --  The most common second bit of the numbers in the diagnostic report
+      --  is 0, so the second bit of the gamma rate is 0.
+      --
+      --  The most common value of the third, fourth, and fifth bits are
+      --  1, 1, and 0, respectively, and so the final three bits of
+      --  the gamma rate are 110.
+      --
+      --  So, the gamma rate is the binary number 10110, or 22 in decimal.
+      --
+      --  The epsilon rate is calculated in a similar way; rather than use
+      --  the most common bit, the least common bit from each position is
+      --  used. So, the epsilon rate is 01001, or 9 in decimal.
+      --  Multiplying the gamma rate (22) by the epsilon rate (9) produces
+      --  the power consumption, 198.
+      --
+      --  Use the binary numbers in your diagnostic report to calculate
+      --  the gamma rate and epsilon rate, then multiply them together.
+      --  What is the power consumption of the submarine?
+      --  (Be sure to represent your answer in decimal, not binary.)
+      package Part_One is
+
+         procedure Run;
+
+      end Part_One;
+
+      --  Next, you should verify the life support rating, which can be
+      --  determined by multiplying the oxygen generator rating by the CO2
+      --  scrubber rating.
+      --
+      --  Both the oxygen generator rating and the CO2 scrubber rating are
+      --  values that can be found in your diagnostic report - finding them
+      --  is the tricky part. Both values are located using a similar process
+      --  that involves filtering out values until only one remains.
+      --  Before searching for either rating value, start with the full list
+      --  of binary numbers from your diagnostic report and consider just
+      --  the first bit of those numbers. Then:
+      --
+      --  Keep only numbers selected by the bit criteria for the type
+      --  of rating value for which you are searching. Discard numbers
+      --  which do not match the bit criteria.
+      --  If you only have one number left, stop; this is the rating value
+      --  for which you are searching.
+      --  Otherwise, repeat the process, considering the next bit to the right.
+      --
+      --  The bit criteria depends on which type of rating value
+      --  you want to find:
+      --
+      --  To find oxygen generator rating, determine the most common value
+      --  (0 or 1) in the current bit position, and keep only numbers
+      --  with that bit in that position. If 0 and 1 are equally common,
+      --  keep values with a 1 in the position being considered.
+      --
+      --  To find CO2 scrubber rating, determine the least common value
+      --  (0 or 1) in the current bit position, and keep only numbers
+      --  with that bit in that position. If 0 and 1 are equally common,
+      --  keep values with a 0 in the position being considered.
+      --
+      --  For example, to determine the oxygen generator rating value
+      --  using the same example diagnostic report from above:
+      --
+      --  Start with all 12 numbers and consider only the first bit of
+      --  each number. There are more 1 bits (7) than 0 bits (5),
+      --  so keep only the 7 numbers with a 1 in the first position:
+      --  11110, 10110, 10111, 10101, 11100, 10000, and 11001.
+      --  Then, consider the second bit of the 7 remaining numbers:
+      --  there are more 0 bits (4) than 1 bits (3), so keep only
+      --  the 4 numbers with a 0 in the second position:
+      --  10110, 10111, 10101, and 10000.
+      --  In the third position, three of the four numbers have a 1,
+      --  so keep those three: 10110, 10111, and 10101.
+      --  In the fourth position, two of the three numbers have a 1,
+      --  so keep those two: 10110 and 10111.
+      --  In the fifth position, there are an equal number of
+      --  0 bits and 1 bits (one each). So, to find the oxygen generator
+      --  rating, keep the number with a 1 in that position: 10111.
+      --  As there is only one number left, stop; the oxygen generator rating
+      --  is 10111, or 23 in decimal.
+      --
+      --  Then, to determine the CO2 scrubber rating value from the same
+      --  example above:
+      --
+      --  Start again with all 12 numbers and consider only the first bit of
+      --  each number. There are fewer 0 bits (5) than 1 bits (7),
+      --  so keep only the 5 numbers with a 0 in the first position:
+      --  00100, 01111, 00111, 00010, and 01010.
+      --  Then, consider the second bit of the 5 remaining numbers:
+      --  there are fewer 1 bits (2) than 0 bits (3), so keep only
+      --  the 2 numbers with a 1 in the second position: 01111 and 01010.
+      --  In the third position, there are an equal number of 0 bits and
+      --  1 bits (one each). So, to find the CO2 scrubber rating,
+      --  keep the number with a 0 in that position: 01010.
+      --  As there is only one number left, stop; the CO2 scrubber rating
+      --  is 01010, or 10 in decimal.
+      --
+      --  Finally, to find the life support rating, multiply the oxygen
+      --  generator rating (23) by the CO2 scrubber rating (10) to get 230.
+      --
+      --  Use the binary numbers in your diagnostic report to calculate
+      --  the oxygen generator rating and CO2 scrubber rating,
+      --  then multiply them together. What is the life support rating
+      --  of the submarine?
+      --  (Be sure to represent your answer in decimal, not binary.)
+      package Part_Two is
+
+         procedure Run;
+
+      end Part_Two;
+
+   end Day_3;
+
+   package Day_4 is
+
+      --  Day 4: Giant Squid
+      --
+      --  You're already almost 1.5km (almost a mile) below the surface
+      --  of the ocean, already so deep that you can't see any sunlight.
+      --  What you can see, however, is a giant squid that has attached
+      --  itself to the outside of your submarine.
+      --
+      --  Maybe it wants to play bingo?
+      --
+      --  Bingo is played on a set of boards each consisting of a 5x5 grid
+      --  of numbers. Numbers are chosen at random, and the chosen number
+      --  is marked on all boards on which it appears.
+      ---  (Numbers may not appear on all boards.) If all numbers in any row
+      --  or any column of a board are marked, that board wins.
+      --  (Diagonals don't count.)
+      --
+      --  The submarine has a bingo subsystem to help passengers (currently,
+      --  you and the giant squid) pass the time. It automatically generates
+      --  a random order in which to draw numbers and a random set of boards
+      --  (your puzzle input). For example:
+      --
+      -- 7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
+      --
+      --  22 13 17 11  0
+      --   8  2 23  4 24
+      --  21  9 14 16  7
+      --   6 10  3 18  5
+      --   1 12 20 15 19
+      --
+      --   3 15  0  2 22
+      --   9 18 13 17  5
+      --  19  8  7 25 23
+      --  20 11 10 24  4
+      --  14 21 16 12  6
+      --
+      --  14 21 17 24  4
+      --  10 16 15  9 19
+      --  18  8 23 26 20
+      --  22 11 13  6  5
+      --   2  0 12  3  7
+      --
+      --  After the first five numbers are drawn (7, 4, 9, 5, and 11),
+      --  there are no winners, but the boards are marked as follows
+      --  (shown here adjacent to each other to save space):
+      --
+      --  22 13 17 11  0         3 15  0  2 22        14 21 17 24  4
+      --   8  2 23  4 24         9 18 13 17  5        10 16 15  9 19
+      --  21  9 14 16  7        19  8  7 25 23        18  8 23 26 20
+      --   6 10  3 18  5        20 11 10 24  4        22 11 13  6  5
+      --   1 12 20 15 19        14 21 16 12  6         2  0 12  3  7
+      --
+      --  After the next six numbers are drawn (17, 23, 2, 0, 14, and 21),
+      --  there are still no winners:
+      --
+      --  22 13 17 11  0         3 15  0  2 22        14 21 17 24  4
+      --   8  2 23  4 24         9 18 13 17  5        10 16 15  9 19
+      --  21  9 14 16  7        19  8  7 25 23        18  8 23 26 20
+      --   6 10  3 18  5        20 11 10 24  4        22 11 13  6  5
+      --   1 12 20 15 19        14 21 16 12  6         2  0 12  3  7
+      --
+      --  Finally, 24 is drawn:
+      --
+      --  22 13 17 11  0         3 15  0  2 22        14 21 17 24  4
+      --   8  2 23  4 24         9 18 13 17  5        10 16 15  9 19
+      --  21  9 14 16  7        19  8  7 25 23        18  8 23 26 20
+      --   6 10  3 18  5        20 11 10 24  4        22 11 13  6  5
+      --   1 12 20 15 19        14 21 16 12  6         2  0 12  3  7
+      --
+      --  At this point, the third board wins because it has at least
+      --  one complete row or column of marked numbers (in this case,
+      --  the entire top row is marked: 14 21 17 24 4).
+      --
+      --  The score of the winning board can now be calculated.
+      --  Start by finding the sum of all unmarked numbers on that board;
+      --  in this case, the sum is 188. Then, multiply that sum by the number
+      --  that was just called when the board won, 24, to get the final score,
+      --  188 * 24 = 4512.
+      --
+      --  To guarantee victory against the giant squid, figure out which board
+      --  will win first. What will your final score be if you choose
+      --  that board?
+      package Part_One is
+
+         procedure Run;
+
+      end Part_One;
+
+      --  On the other hand, it might be wise to try a different strategy:
+      --  let the giant squid win.
+      --
+      --  You aren't sure how many bingo boards a giant squid could play
+      --  at once, so rather than waste time counting its arms, the safe thing
+      --  to do is to figure out which board will win last and choose that one.
+      --  That way, no matter which boards it picks, it will win for sure.
+      --
+      --  In the above example, the second board is the last to win,
+      --  which happens after 13 is eventually called and its middle column
+      --  is completely marked. If you were to keep playing until this point,
+      --  the second board would have a sum of unmarked numbers equal to 148
+      --  for a final score of 148 * 13 = 1924.
+      --
+      --  Figure out which board will win last.
+      --  Once it wins, what would its final score be?
+      package Part_Two is
+
+         procedure Run;
+
+      end Part_Two;
+
+   end Day_4;
+
+   package Day_5 is
+
+      --  Day 5: Hydrothermal Venture
+      --
+      --  You come across a field of hydrothermal vents on the ocean floor!
+      --  These vents constantly produce large, opaque clouds,
+      --  so it would be best to avoid them if possible.
+      --
+      --  They tend to form in lines; the submarine helpfully produces
+      --  a list of nearby lines of vents (your puzzle input) for you
+      --  to review. For example:
+      --
+      --  0,9 -> 5,9
+      --  8,0 -> 0,8
+      --  9,4 -> 3,4
+      --  2,2 -> 2,1
+      --  7,0 -> 7,4
+      --  6,4 -> 2,0
+      --  0,9 -> 2,9
+      --  3,4 -> 1,4
+      --  0,0 -> 8,8
+      --  5,5 -> 8,2
+      --
+      --  Each line of vents is given as a line segment in the format
+      --  x1,y1 -> x2,y2 where x1,y1 are the coordinates of one end
+      --  the line segment and x2,y2 are the coordinates of the other end.
+      --  These line segments include the points at both ends. In other words:
+      --
+      --  An entry like 1,1 -> 1,3 covers points 1,1, 1,2, and 1,3.
+      --  An entry like 9,7 -> 7,7 covers points 9,7, 8,7, and 7,7.
+      --
+      --  For now, only consider horizontal and vertical lines:
+      --  lines where either x1 = x2 or y1 = y2.
+      --
+      --  So, the horizontal and vertical lines from the above list would
+      --  produce the following diagram:
+      --
+      --  .......1..
+      --  ..1....1..
+      --  ..1....1..
+      --  .......1..
+      --  .112111211
+      --  ..........
+      --  ..........
+      --  ..........
+      --  ..........
+      --  222111....
+      --
+      --  In this diagram, the top left corner is 0,0 and the bottom right
+      --  corner is 9,9. Each position is shown as the number of lines which
+      --  cover that point or . if no line covers that point.
+      --  The top-left pair of 1s, for example, comes from 2,2 -> 2,1;
+      --  the very bottom row is formed by the overlapping lines
+      --  0,9 -> 5,9 and 0,9 -> 2,9.
+      --
+      --  To avoid the most dangerous areas, you need to determine
+      --  the number of points where at least two lines overlap.
+      --  In the above example, this is anywhere in the diagram
+      --  with a 2 or larger - a total of 5 points.
+      --
+      --  Consider only horizontal and vertical lines. At how many points
+      --  do at least two lines overlap?
+      --
+      --  Your puzzle answer was 6189.
+      package Part_One is
+
+         procedure Run;
+
+      end Part_One;
+
+      --  Unfortunately, considering only horizontal and vertical lines
+      --  doesn't give you the full picture; you need to also consider
+      --  diagonal lines.
+      --
+      --  Because of the limits of the hydrothermal vent mapping system,
+      --  the lines in your list will only ever be horizontal, vertical,
+      --  or a diagonal line at exactly 45 degrees. In other words:
+      --
+      --   An entry like 1,1 -> 3,3 covers points 1,1, 2,2, and 3,3.
+      --   An entry like 9,7 -> 7,9 covers points 9,7, 8,8, and 7,9.
+      --
+      -- Considering all lines from the above example would now produce
+      --  the following diagram:
+      --
+      --  1.1....11.
+      --  .111...2..
+      --  ..2.1.111.
+      --  ...1.2.2..
+      --  .112313211
+      --  ...1.2....
+      --  ..1...1...
+      --  .1.....1..
+      --  1.......1.
+      --  222111....
+      --
+      --  You still need to determine the number of points where at least
+      --  two lines overlap. In the above example, this is still anywhere
+      --  in the diagram with a 2 or larger - now a total of 12 points.
+      --
+      --  Consider all of the lines. At how many points do at least
+      --  two lines overlap?
+      --
+      --  Your puzzle answer was 19164.
+      package Part_Two is
+
+         procedure Run;
+
+      end Part_Two;
+
+   end Day_5;
+
+   package Day_6 is
+
+      package Part_One is
+
+         procedure Run;
+
+      end Part_One;
+
+      package Part_Two is
+
+         procedure Run;
+
+      end Part_Two;
+
+   end Day_6;
 
 end Advent_Of_Code_2021;
