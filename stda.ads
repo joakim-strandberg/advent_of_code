@@ -124,6 +124,9 @@ package Stda is
 
    end Types;
 
+   subtype Pos32 is Types.Pos32;
+   subtype Nat32 is Types.Nat32;
+
    generic
       Max_Length : Types.Pos16;
    package Bounded_Strings is
@@ -250,6 +253,104 @@ package Stda is
       end record;
 
    end Bounded_Vectors;
+
+   --  This tyoe of vector should be allocated inside pool.
+   generic
+      type Element_Type is private;
+      type Index_Type is range <>;
+      --  Index is a type that is assumed to always start from one
+      --  and upwards 1 .. n where n is some positive number.
+   package Pool_Bounded_Vectors is
+
+      subtype Index is Index_Type;
+
+      subtype Extended_Index is Index_Type'Base range 0 .. Index_Type'Last;
+
+      type Optional_Element (Exists : Boolean := False) is record
+         case Exists is
+            when True  => Value : Element_Type;
+            when False => null;
+         end case;
+      end record;
+
+      type Element_Array is array (Index_Type) of Optional_Element;
+      --  The array type is not aliased to disallow references to individual
+      --  elements in the array. The idea is to use generics to change
+      --  part of an element, not using an access-to-object type.
+
+      type Read_Only_Element_Array_Ptr is access constant Element_Array;
+
+      type Vector is private;
+
+      function Array_View (Container : access Vector)
+                           return Read_Only_Element_Array_Ptr;
+      --  Read only view of the vector container.
+
+      function "=" (L, R : Vector) return Boolean;
+
+      procedure Append (Container : in out Vector;
+                        New_Item  : Element_Type);
+      --  Pre-condition: not Is_Full (This)
+
+      procedure Append (Container : access Vector;
+                        New_Item  : Element_Type);
+
+      function Contains (This         : Vector;
+                         Searched_For : Element_Type) return Boolean;
+
+--        function First (This : Vector) return Index;
+--
+--        function Last (This : Vector) return Extended_Index;
+
+      function Is_Empty (This : Vector) return Boolean;
+
+      function Is_Full (This : Vector) return Boolean;
+
+      function Element (This  : Vector;
+                        Index : Index_Type) return Element_Type;
+
+      function Last_Element (This : Vector) return Element_Type;
+
+      function Last_Element (Container : access Vector) return Element_Type;
+
+      procedure Delete_Last (This : in out Vector);
+
+      procedure Delete_Last (Container : access Vector);
+
+      procedure Delete (This : in out Vector;
+                        Item : Element_Type);
+      --  Deletes all instances of the item from the vector.
+
+      procedure Replace_Element (This        : in out Vector;
+                                 Idx         : Index_Type;
+                                 New_Element : Element_Type);
+
+      procedure Clear (This : in out Vector);
+
+      procedure Clear (This : access Vector);
+
+      function Length (This : Vector) return Types.Nat32;
+
+      function Length (Container : access Vector) return Types.Nat32;
+
+      package Exported_Identifiers is
+
+         First : constant Index_Type := Index_Type'First;
+
+         function Last (This : Vector) return Extended_Index;
+
+         function Last (This : access Vector) return Extended_Index;
+
+      end Exported_Identifiers;
+
+   private
+
+      type Vector is record
+         Items   : aliased Element_Array;
+         My_Last : Extended_Index := Extended_Index'First;
+      end record;
+
+   end Pool_Bounded_Vectors;
 
    --  This is a bounded vector implementation that is intended to be used
    --  in the private part of record types. And the instances of the record
@@ -498,17 +599,20 @@ package Stda is
    --  is therefore defined as a nested package.
    package Latin_1 is
 
-      type Index_Interval is record
+      --  This record type contains the substring indices into an existing
+      --  String. Consider the String "Hello World!" where the first
+      --  String index is 1 and the last index is 12.
+      --  First = 7 and Last = 11 denotes the substring "World".
+      --  Natural is the index type used in standard Ada Strings.
+      type Substring_Indices is record
          First : Natural;
          Last  : Natural;
       end record;
 
-      type Index_Interval_Array is array
-        (Positive range <>) of Index_Interval;
+      type Substring_Array is array (Pos32 range <>) of Substring_Indices;
 
-      function Get_Intervals (Line : String;
-                              Sep  : Character)
-                              return Index_Interval_Array;
+      function Split (Line : String;
+                      Sep  : Character) return Substring_Array;
       --  Is used to split a String into substrings.
 
       subtype Character_As_Int32 is Types.Int32 range 0 .. 255;

@@ -35,7 +35,7 @@ package body Stdh is
 
       procedure Free_Storage_Array is new Ada.Unchecked_Deallocation
         (Object => Storage_Array,
-         Name => Storage_Array_Access);
+         Name   => Storage_Array_Access);
 
       --------------------------------------------------------------
 
@@ -45,8 +45,9 @@ package body Stdh is
                           Alignment : Storage_Elements.Storage_Count)
       is
       begin
-
-         --        pragma Assert (Is_Owner (Pool, Current_Task));
+         if not Is_Owner (Pool, Current_Task) then
+            raise Constraint_Error;
+         end if;
 
          if Size_In_Storage_Elements >
            Pool.Active'Length - Pool.Next_Allocation
@@ -74,7 +75,7 @@ package body Stdh is
 
       --------------------------------------------------------------
 
-      procedure Finalize   (Pool : in out Basic_Dynamic_Pool) is
+      procedure Finalize (Pool : in out Basic_Dynamic_Pool) is
       begin
          null;
       end Finalize;
@@ -86,6 +87,11 @@ package body Stdh is
          Pool.Next_Allocation := 1;
          Pool.Owner := Ada.Task_Identification.Current_Task;
       end Initialize;
+
+      procedure Reset (Pool : in out Basic_Dynamic_Pool) is
+      begin
+         Pool.Next_Allocation := 1;
+      end Reset;
 
       --------------------------------------------------------------
 
@@ -102,12 +108,13 @@ package body Stdh is
         (Pool : in out Basic_Dynamic_Pool;
          T : Task_Id := Current_Task) is
       begin
-         --        pragma Assert
-         --          ((Is_Owner (Pool, Null_Task_Id) and then T = Current_Task)
-         --           or else (Is_Owner (Pool) and then T = Null_Task_Id));
+         if not ((Is_Owner (Pool, Null_Task_Id) and then T = Current_Task)
+                 or else (Is_Owner (Pool) and then T = Null_Task_Id))
+         then
+            raise Constraint_Error;
+         end if;
 
          Pool.Owner := T;
-
       end Set_Owner;
 
       --------------------------------------------------------------

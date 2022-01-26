@@ -245,6 +245,11 @@ package Stdh is
       --  owner to a Null_Task_Id. Another task may obtain ownership of a pool,
       --  provided that the pool has no owner.
 
+      generic
+      procedure Reset (Pool : in out Basic_Dynamic_Pool);
+      --  This subprogram is reset to make it harder for misuse by limiting
+      --  the scope where it can be called.
+
    private
 
       subtype Storage_Array is System.Storage_Elements.Storage_Array;

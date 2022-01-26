@@ -281,11 +281,11 @@ package body Stdx is
 --     end Close;
 --
 
-   procedure Put_Line (Io   : in out Std_Io_Target;
-                       Text : String) is
-   begin
-      Ada.Text_IO.Put_Line (Text);
-   end Put_Line;
+--     procedure Put_Line (Io   : in out Std_Io_Target;
+--                         Text : String) is
+--     begin
+--        Ada.Text_IO.Put_Line (Text);
+--     end Put_Line;
 
 --     procedure Put_Line_Impl (Terminal : Io_Target;
 --                              Text     : String) is
@@ -301,72 +301,72 @@ package body Stdx is
 --     end Make_Std_Out;
 --
 
-   package body Text_IO is
-
-      My_Std_Io_Target : aliased Std_Io_Target;
-
-      function Std_Io return Io_Target_Ptr is
-      begin
-         return My_Std_Io_Target'Access;
-      end Std_Io;
-
-   end Text_IO;
+--     package body Text_IO is
+--
+--        My_Std_Io_Target : aliased Std_Io_Target;
+--
+--        function Std_Io return Io_Target_Ptr is
+--        begin
+--           return My_Std_Io_Target'Access;
+--        end Std_Io;
+--
+--     end Text_IO;
 
 --     procedure Put_Line_Test (Terminal : Io_Target;
 --                              Text     : String) is
 --     begin
 --        Terminal.Term.Owner.Append (Text);
 --     end Put_Line_Test;
+
+
+--     package body Text_IO_Tests is
 --
-
-   package body Text_IO_Tests is
-
-      function "+" (Text : String)
-                 return Text_IO_Tests.Printed_Strings.Bounded_String is
-         Result : Text_IO_Tests.Printed_Strings.Bounded_String
-           := Text_IO_Tests.Printed_Strings.Empty;
-      begin
-         Text_IO_Tests.Printed_Strings.Append (This => Result,
-                                               Text => Text);
-         return Result;
-      end "+";
-
-      protected body Std_Out_Owner is
-
-         procedure Append (Text : String) is
-         begin
-            Text_IO_Tests.Line_Vs.Append (My_Lines, +Text);
-         end Append;
-
-         function Lines return Text_IO_Tests.Line_Vs.Vector is
-         begin
-            return My_Lines;
-         end Lines;
-
-      end Std_Out_Owner;
-
-      procedure Put_Line (Terminal : in out Test_Io_Target;
-                          Text     : String) is
-      begin
-         Terminal.Owner.Append (Text);
-      end Put_Line;
-
-
---        My_Proxy : aliased Std_Out_Proxy;
-
-      My_Terminal : aliased Test_Io_Target;
-
-      function Test_Io return Text_IO.Io_Target_Ptr is
-      begin
-         return My_Terminal'Access;
-      end Test_Io;
-
-      function Lines return Text_IO_Tests.Line_Vs.Vector is
-      begin
-         return My_Terminal.Owner.Lines;
-      end Lines;
-
-   end Text_IO_Tests;
+--        function "+" (Text : String)
+--                   return Text_IO_Tests.Printed_Strings.Bounded_String is
+--           Result : Text_IO_Tests.Printed_Strings.Bounded_String
+--             := Text_IO_Tests.Printed_Strings.Empty;
+--        begin
+--           Text_IO_Tests.Printed_Strings.Append (This => Result,
+--                                                 Text => Text);
+--           return Result;
+--        end "+";
+--
+--        protected body Std_Out_Owner is
+--
+--           procedure Append (Text : String) is
+--           begin
+--              Text_IO_Tests.Line_Vs.Append (My_Lines, +Text);
+--           end Append;
+--
+--           function Lines return Text_IO_Tests.Line_Vs.Vector is
+--           begin
+--              return My_Lines;
+--           end Lines;
+--
+--        end Std_Out_Owner;
+--
+--        procedure Put_Line (Terminal : in out Test_Io_Target;
+--                            Text     : String) is
+--        begin
+--           Terminal.Owner.Append (Text);
+--        end Put_Line;
+--
+--
+--  --        My_Proxy : aliased Std_Out_Proxy;
+--
+--        My_Terminal : aliased Test_Io_Target;
+--
+--        function Test_Io return Text_IO.Io_Target_Ptr is
+--        begin
+--           return My_Terminal'Access;
+--        end Test_Io;
+--
+--        function Lines return Text_IO_Tests.Line_Vs.Vector is
+--        begin
+--           return My_Terminal.Owner.Lines;
+--        end Lines;
+--
+--     end Text_IO_Tests;
 --
 --     function Create (Target : Io_Target) return Input_File is
 --     begin

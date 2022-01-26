@@ -98,21 +98,21 @@ package Stdx is
 
    end Text_Files;
 
-   package Text_IO is
-
-      type Io_Target is abstract tagged limited null record;
-
-      procedure Put_Line (Io   : in out Io_Target;
-                          Text : String) is abstract;
-      --  This is the procedure to use for printing to standard out!
-
-      type Io_Target_Ptr is access all Io_Target'Class;
-
-      function Std_Io return Io_Target_Ptr;
-      --  Returns an access-to-object variable that references a unique
-      --  global instance of terminal type that directs text to standard out.
-
-   end Text_IO;
+--     package Text_IO is
+--
+--        type Io_Target is abstract tagged limited null record;
+--
+--        procedure Put_Line (Io   : in out Io_Target;
+--                            Text : String) is abstract;
+--        --  This is the procedure to use for printing to standard out!
+--
+--        type Io_Target_Ptr is access all Io_Target'Class;
+--
+--        function Std_Io return Io_Target_Ptr;
+--        --  Returns an access-to-object variable that references a unique
+--        --  global instance of terminal type that directs text to standard out.
+--
+--     end Text_IO;
 
 --     Bytes_To_Read : constant := 1024;
 --
@@ -159,61 +159,61 @@ package Stdx is
 --
 --     procedure Close (File        : in out Output_File;
 --                      Call_Result : in out Subprogram_Call_Result);
---
-   --
+
+
    --  The following definitions are only used for automated tests and usually
    --  not used in an application.
-   --
 
-   package Text_IO_Tests is
 
-      Max_Lines : constant := 5;
-
-      package Printed_Strings is new Stda.Bounded_Strings (Max_Length => 80);
-
-      type Line_Index is range 1 .. Max_Lines;
-
-      package Line_Vs is new Stda.Bounded_Vectors
-        (Element_Type => Printed_Strings.Bounded_String,
-         Index        => Line_Index);
-
-      function Test_Io return Text_IO.Io_Target_Ptr;
-
-      function Lines return Line_Vs.Vector;
-
-      type Test_Io_Target is new Text_IO.Io_Target with private;
-
-      procedure Put_Line (Terminal : in out Test_Io_Target;
-                          Text     : String);
-
-   private
-
-      protected type Std_Out_Owner is
-         procedure Append (Text : String);
-         function Lines return Text_IO_Tests.Line_Vs.Vector;
-      private
-         My_Lines : Text_IO_Tests.Line_Vs.Vector;
-      end Std_Out_Owner;
-
-      type Std_Out_Proxy is record
-         Owner : Std_Out_Owner;
-      end record;
-
-      type Std_Out_Proxy_Ptr is access all Std_Out_Proxy;
-      for Std_Out_Proxy_Ptr'Storage_Size use 0;
-
-      type Test_Io_Target is new Text_IO.Io_Target with record
-         Owner : Std_Out_Owner;
-      end record;
-
-   end Text_IO_Tests;
+--     package Text_IO_Tests is
+--
+--        Max_Lines : constant := 5;
+--
+--        package Printed_Strings is new Stda.Bounded_Strings (Max_Length => 80);
+--
+--        type Line_Index is range 1 .. Max_Lines;
+--
+--        package Line_Vs is new Stda.Bounded_Vectors
+--          (Element_Type => Printed_Strings.Bounded_String,
+--           Index        => Line_Index);
+--
+--        function Test_Io return Text_IO.Io_Target_Ptr;
+--
+--        function Lines return Line_Vs.Vector;
+--
+--        type Test_Io_Target is new Text_IO.Io_Target with private;
+--
+--        procedure Put_Line (Terminal : in out Test_Io_Target;
+--                            Text     : String);
+--
+--     private
+--
+--        protected type Std_Out_Owner is
+--           procedure Append (Text : String);
+--           function Lines return Text_IO_Tests.Line_Vs.Vector;
+--        private
+--           My_Lines : Text_IO_Tests.Line_Vs.Vector;
+--        end Std_Out_Owner;
+--
+--        type Std_Out_Proxy is record
+--           Owner : Std_Out_Owner;
+--        end record;
+--
+--        type Std_Out_Proxy_Ptr is access all Std_Out_Proxy;
+--        for Std_Out_Proxy_Ptr'Storage_Size use 0;
+--
+--        type Test_Io_Target is new Text_IO.Io_Target with record
+--           Owner : Std_Out_Owner;
+--        end record;
+--
+--     end Text_IO_Tests;
 
 private
 
-   type Std_Io_Target is new Text_IO.Io_Target with null record;
-
-   procedure Put_Line (Io   : in out Std_Io_Target;
-                       Text : String);
+--     type Std_Io_Target is new Text_IO.Io_Target with null record;
+--
+--     procedure Put_Line (Io   : in out Std_Io_Target;
+--                         Text : String);
 
 --     package Private_Defs is
 --

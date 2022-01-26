@@ -194,10 +194,9 @@ package body Stda is
 
       use type Types.Int32;
 
-      function Get_Intervals (Line : String;
-                               Sep  : Character)
-                               return Index_Interval_Array is
-         Comma_Count : Natural := 0;
+      function Split (Line : String;
+                      Sep  : Character) return Substring_Array is
+         Comma_Count : Nat32 := 0;
       begin
          for I in Line'Range loop
             if Line (I) = Sep then
@@ -206,8 +205,8 @@ package body Stda is
          end loop;
 
          declare
-            Result : Index_Interval_Array (1 .. Comma_Count + 1);
-            Current : Positive := 1;
+            Result : Substring_Array (1 .. Comma_Count + 1);
+            Current : Pos32 := 1;
             Prev_Index : Positive := Line'First;
          begin
             for I in Line'Range loop
@@ -223,7 +222,7 @@ package body Stda is
             Result (Result'Last).Last := Line'Last;
             return Result;
          end;
-      end Get_Intervals;
+      end Split;
 
       function To_Int32 (Value : Character) return Character_As_Int32 is
          Result : Character_As_Int32;
@@ -675,6 +674,171 @@ package body Stda is
       end Length;
 
    end Bounded_Vectors;
+
+   package body Pool_Bounded_Vectors is
+
+      function Array_View (Container : access Vector)
+                           return Read_Only_Element_Array_Ptr is
+      begin
+         return Container.Items'Access;
+      end Array_View;
+
+      package body Exported_Identifiers is
+
+         --  function First (This : Vector) return Index is
+         --  begin
+         --     return Index_Type'First;
+         --  end First;
+
+         function Last (This : Vector) return Extended_Index is
+         begin
+            return This.My_Last;
+         end Last;
+
+         function Last (This : access Vector) return Extended_Index is
+         begin
+            return This.My_Last;
+         end Last;
+
+      end Exported_Identifiers;
+
+      function Last (This : Vector) return Extended_Index renames
+        Exported_Identifiers.Last;
+
+      function Is_Empty (This : Vector) return Boolean is
+      begin
+         return This.My_Last = Extended_Index'First;
+      end Is_Empty;
+
+      function Is_Full (This : Vector) return Boolean is
+      begin
+         return This.My_Last = Index_Type'Last;
+      end Is_Full;
+
+      function "=" (L, R : Vector) return Boolean is
+         Result : Boolean := True;
+      begin
+         if Last (L) = Last (R) then
+            for I in Index_Type range Index_Type'First .. Last (L) loop
+               if L.Items (I) /= R.Items (I) then
+                  Result := False;
+                  exit;
+               end if;
+            end loop;
+         else
+            Result := False;
+         end if;
+
+         return Result;
+      end "=";
+
+      procedure Append (Container : in out Vector;
+                        New_Item  : Element_Type) is
+      begin
+         Container.My_Last := Container.My_Last + 1;
+         Container.Items (Last (Container)) := (Exists => True,
+                                                Value  => New_Item);
+      end Append;
+
+      procedure Append (Container : access Vector;
+                        New_Item  : Element_Type) is
+      begin
+         Append (Container.all, New_Item);
+      end Append;
+
+      function Contains (This         : Vector;
+                         Searched_For : Element_Type) return Boolean
+      is
+         Result : Boolean := False;
+      begin
+         for I in Extended_Index range Index_Type'First .. This.My_Last loop
+            if This.Items (I).Value = Searched_For then
+               Result := True;
+               exit;
+            end if;
+         end loop;
+         return Result;
+      end Contains;
+
+      function Element (This  : Vector;
+                        Index : Index_Type) return Element_Type is
+      begin
+         return This.Items (Index).Value;
+      end Element;
+
+      function Last_Element (This : Vector) return Element_Type is
+      begin
+         return This.Items (Index_Type (This.My_Last)).Value;
+      end Last_Element;
+
+      function Last_Element (Container : access Vector) return Element_Type is
+      begin
+         return Last_Element (Container.all);
+      end Last_Element;
+
+      procedure Delete_Last (This : in out Vector) is
+      begin
+         This.Items (This.My_Last) := (Exists => False);
+         This.My_Last := This.My_Last - 1;
+      end Delete_Last;
+
+      procedure Delete_Last (Container : access Vector) is
+      begin
+         Delete_Last (Container.all);
+      end Delete_Last;
+
+      procedure Delete (This : in out Vector;
+                        Item : Element_Type) is
+      begin
+         for I in Index_Type range Index_Type'First .. This.My_Last loop
+            if This.Items (I).Value = Item then
+               This.Items (I .. This.My_Last - 1)
+                 := This.Items (I + 1 .. This.My_Last);
+               Delete_Last (This);
+            end if;
+         end loop;
+      end Delete;
+
+      procedure Clear (This : in out Vector) is
+      begin
+         for I in Index_Type range Index_Type'First .. This.My_Last loop
+            This.Items (I) := (Exists => False);
+         end loop;
+         This.My_Last := Extended_Index'First;
+      end Clear;
+
+      procedure Clear (This : access Vector) is
+      begin
+         Clear (This.all);
+      end Clear;
+
+      procedure Replace_Element
+        (This        : in out Vector;
+         Idx         : Index_Type;
+         New_Element : Element_Type) is
+      begin
+         This.Items (Idx) := (Exists => True,
+                              Value  => New_Element);
+      end Replace_Element;
+
+      procedure Replace_Last_Element (This        : in out Vector;
+                                      New_Element : Element_Type) is
+      begin
+         This.Items (Last (This)) := (Exists => True,
+                                      Value  => New_Element);
+      end Replace_Last_Element;
+
+      function Length (This : Vector) return Types.Nat32 is
+      begin
+         return Types.Nat32 (This.My_Last);
+      end Length;
+
+      function Length (Container : access Vector) return Types.Nat32 is
+      begin
+         return Length (Container.all);
+      end Length;
+
+   end Pool_Bounded_Vectors;
 
    package body Record_Bounded_Vectors is
 

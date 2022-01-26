@@ -3,11 +3,16 @@ pragma Elaborate_All (Stda);
 
 package Advent_Of_Code_2021 is
 
-   subtype Nat32 is Stda.Types.Nat32;
-   subtype Pos32 is Stda.Types.Pos32;
+   --  The puzzles use a storage pool that is owned by this task.
+   task Puzzle_Runner is
 
-   use type Nat32;
-   use type Pos32;
+      entry Run;
+
+      entry Take_Ownership;
+
+   end Puzzle_Runner;
+
+private
 
    package Day_1 is
 
@@ -634,5 +639,69 @@ package Advent_Of_Code_2021 is
       end Part_Two;
 
    end Day_6;
+
+   package Day_7 is
+
+      package Part_One is
+
+         procedure Run;
+
+      end Part_One;
+
+      package Part_Two is
+
+         procedure Run;
+
+      end Part_Two;
+
+   end Day_7;
+
+   package Day_8 is
+
+      package Part_One is
+
+         procedure Run;
+
+      end Part_One;
+
+      package Part_Two is
+
+         procedure Run;
+
+      end Part_Two;
+
+   end Day_8;
+
+   package Day_9 is
+
+      package Part_One is
+
+         procedure Run;
+
+      end Part_One;
+
+      package Part_Two is
+
+         procedure Run;
+
+      end Part_Two;
+
+   end Day_9;
+
+   package Day_10 is
+
+      package Part_One is
+
+         procedure Run;
+
+      end Part_One;
+
+      package Part_Two is
+
+         procedure Run;
+
+      end Part_Two;
+
+   end Day_10;
 
 end Advent_Of_Code_2021;
