@@ -10,7 +10,6 @@ with Ada.Finalization;
 with Ada.Text_IO;
 with Ada.Strings.Fixed;
 with Ada.Integer_Text_IO;
-with Ada.Containers.Vectors;
 with Ada.Integer_Text_IO;
 with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
@@ -2415,8 +2414,11 @@ package body Advent_Of_Code_2021 is
             Y : Y_Type;
          end record;
 
-         package Position_Vs is new Ada.Containers.Vectors
-           (Index_Type   => Positive,
+         type Position_Index is new Pos32 range
+           1 ..  Pos32 (X_Type'Last * X_Type'Last);
+
+         package Position_Vs is new Stdh.Unbounded_Bounded_Vectors
+           (Index_Type   => Position_Index,
             Element_Type => Position_Type);
 
          procedure Sort is new Ada.Containers.Generic_Array_Sort
@@ -2664,22 +2666,92 @@ package body Advent_Of_Code_2021 is
                   declare
                      Position : Position_Vs.Vector;
                      New_P : Position_Vs.Vector;
-                     Index : Position_Vs.Extended_Index;
                      NX : X_Type;
                      NY : Y_Type;
-                     use type Ada.Containers.Count_Type;
                   begin
                      Position.Append ((X => Basin (I).X, Y => Basin (I).Y));
 
                      loop
                         New_P.Clear;
-                        for P of Position loop
-                           Text_IO.Put_Line
-                             ("Iterate over " & P.X'Img & " " & P.Y'Img);
-                           if P.X > X_Type'First then
-                              if P.X < X_Type'Last then
-                                 if P.Y > Y_Type'First then
-                                    if P.Y < Y_Type'Last then
+                        declare
+                           First : constant Position_Index
+                             := Position_Index'First;
+                           Last  : constant Position_Vs.Extended_Index
+                             := Position_Vs.Last_Index (Position);
+                           P : Position_Type;
+                        begin
+                           for Pi in Position_Index range First .. Last loop
+                              P := Position_Vs.Element (Position, Pi);
+                              Text_IO.Put_Line
+                                ("Iterate over " & P.X'Img & " " & P.Y'Img);
+                              if P.X > X_Type'First then
+                                 if P.X < X_Type'Last then
+                                    if P.Y > Y_Type'First then
+                                       if P.Y < Y_Type'Last then
+                                          NX := P.X - 1;
+                                          NY := P.Y;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+
+                                          NX := P.X;
+                                          NY := P.Y + 1;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+
+                                          NX := P.X + 1;
+                                          NY := P.Y;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+
+                                          NX := P.X;
+                                          NY := P.Y - 1;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+                                       else
+                                          NX := P.X - 1;
+                                          NY := P.Y;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+
+                                          NX := P.X + 1;
+                                          NY := P.Y;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+
+                                          NX := P.X;
+                                          NY := P.Y - 1;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+                                       end if;
+                                    else
                                        NX := P.X - 1;
                                        NY := P.Y;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
@@ -2700,42 +2772,6 @@ package body Advent_Of_Code_2021 is
 
                                        NX := P.X + 1;
                                        NY := P.Y;
-                                       if Height (NX, NY) > Height (P.X, P.Y) then
-                                          if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
-                                                            Y => NY));
-                                          end if;
-                                       end if;
-
-                                       NX := P.X;
-                                       NY := P.Y - 1;
-                                       if Height (NX, NY) > Height (P.X, P.Y) then
-                                          if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
-                                                            Y => NY));
-                                          end if;
-                                       end if;
-                                    else
-                                       NX := P.X - 1;
-                                       NY := P.Y;
-                                       if Height (NX, NY) > Height (P.X, P.Y) then
-                                          if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
-                                                            Y => NY));
-                                          end if;
-                                       end if;
-
-                                       NX := P.X + 1;
-                                       NY := P.Y;
-                                       if Height (NX, NY) > Height (P.X, P.Y) then
-                                          if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
-                                                            Y => NY));
-                                          end if;
-                                       end if;
-
-                                       NX := P.X;
-                                       NY := P.Y - 1;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
                                              New_P.Append ((X => NX,
@@ -2744,37 +2780,57 @@ package body Advent_Of_Code_2021 is
                                        end if;
                                     end if;
                                  else
-                                    NX := P.X - 1;
-                                    NY := P.Y;
-                                    if Height (NX, NY) > Height (P.X, P.Y) then
-                                       if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
-                                       end if;
-                                    end if;
+                                    --  X = X'Last
+                                    if P.Y > Y_Type'First then
+                                       if P.Y < Y_Type'Last then
+                                          NX := P.X - 1;
+                                          NY := P.Y;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
 
-                                    NX := P.X;
-                                    NY := P.Y + 1;
-                                    if Height (NX, NY) > Height (P.X, P.Y) then
-                                       if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
-                                       end if;
-                                    end if;
+                                          NX := P.X;
+                                          NY := P.Y + 1;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
 
-                                    NX := P.X + 1;
-                                    NY := P.Y;
-                                    if Height (NX, NY) > Height (P.X, P.Y) then
-                                       if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
+                                          NX := P.X;
+                                          NY := P.Y - 1;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+                                       else
+                                          --  Y = Y'Last
+                                          NX := P.X - 1;
+                                          NY := P.Y;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
+
+                                          NX := P.X;
+                                          NY := P.Y - 1;
+                                          if Height (NX, NY) > Height (P.X, P.Y) then
+                                             if Height (NX, NY) < 9 then
+                                                New_P.Append ((X => NX,
+                                                               Y => NY));
+                                             end if;
+                                          end if;
                                        end if;
-                                    end if;
-                                 end if;
-                              else
-                                 --  X = X'Last
-                                 if P.Y > Y_Type'First then
-                                    if P.Y < Y_Type'Last then
+                                    else
+                                       --  Y = Y'First
                                        NX := P.X - 1;
                                        NY := P.Y;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
@@ -2792,6 +2848,29 @@ package body Advent_Of_Code_2021 is
                                                             Y => NY));
                                           end if;
                                        end if;
+                                    end if;
+                                 end if;
+                              else
+                                 --  X = X'First
+                                 if P.Y > Y_Type'First then
+                                    if P.Y < Y_Type'Last then
+                                       NX := P.X;
+                                       NY := P.Y + 1;
+                                       if Height (NX, NY) > Height (P.X, P.Y) then
+                                          if Height (NX, NY) < 9 then
+                                             New_P.Append ((X => NX,
+                                                            Y => NY));
+                                          end if;
+                                       end if;
+
+                                       NX := P.X + 1;
+                                       NY := P.Y;
+                                       if Height (NX, NY) > Height (P.X, P.Y) then
+                                          if Height (NX, NY) < 9 then
+                                             New_P.Append ((X => NX,
+                                                            Y => NY));
+                                          end if;
+                                       end if;
 
                                        NX := P.X;
                                        NY := P.Y - 1;
@@ -2802,8 +2881,7 @@ package body Advent_Of_Code_2021 is
                                           end if;
                                        end if;
                                     else
-                                       --  Y = Y'Last
-                                       NX := P.X - 1;
+                                       NX := P.X + 1;
                                        NY := P.Y;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
@@ -2823,29 +2901,6 @@ package body Advent_Of_Code_2021 is
                                     end if;
                                  else
                                     --  Y = Y'First
-                                    NX := P.X - 1;
-                                    NY := P.Y;
-                                    if Height (NX, NY) > Height (P.X, P.Y) then
-                                       if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
-                                       end if;
-                                    end if;
-
-                                    NX := P.X;
-                                    NY := P.Y + 1;
-                                    if Height (NX, NY) > Height (P.X, P.Y) then
-                                       if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
-                                       end if;
-                                    end if;
-                                 end if;
-                              end if;
-                           else
-                              --  X = X'First
-                              if P.Y > Y_Type'First then
-                                 if P.Y < Y_Type'Last then
                                     NX := P.X;
                                     NY := P.Y + 1;
                                     if Height (NX, NY) > Height (P.X, P.Y) then
@@ -2863,83 +2918,55 @@ package body Advent_Of_Code_2021 is
                                                          Y => NY));
                                        end if;
                                     end if;
-
-                                    NX := P.X;
-                                    NY := P.Y - 1;
-                                    if Height (NX, NY) > Height (P.X, P.Y) then
-                                       if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
-                                       end if;
-                                    end if;
-                                 else
-                                    NX := P.X + 1;
-                                    NY := P.Y;
-                                    if Height (NX, NY) > Height (P.X, P.Y) then
-                                       if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
-                                       end if;
-                                    end if;
-
-                                    NX := P.X;
-                                    NY := P.Y - 1;
-                                    if Height (NX, NY) > Height (P.X, P.Y) then
-                                       if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
-                                       end if;
-                                    end if;
-                                 end if;
-                              else
-                                 --  Y = Y'First
-                                 NX := P.X;
-                                 NY := P.Y + 1;
-                                 if Height (NX, NY) > Height (P.X, P.Y) then
-                                    if Height (NX, NY) < 9 then
-                                       New_P.Append ((X => NX,
-                                                      Y => NY));
-                                    end if;
-                                 end if;
-
-                                 NX := P.X + 1;
-                                 NY := P.Y;
-                                 if Height (NX, NY) > Height (P.X, P.Y) then
-                                    if Height (NX, NY) < 9 then
-                                       New_P.Append ((X => NX,
-                                                      Y => NY));
-                                    end if;
                                  end if;
                               end if;
-                           end if;
-                        end loop;
+                           end loop;
+                        end;
+
                         Text_IO.Put_Line ("New length "  & New_P.Length'Img);
 
                         declare
                            Exists_New_Positions : Boolean := False;
                         begin
-                           for New_Item of New_P loop
-                              Text_IO.Put_Line
-                                ("Will add " & New_Item.X'Img &
-                                   " " & New_Item.Y'Img);
-                              Index := Position.Find_Index (New_Item);
-                              if Index = Position_Vs.No_Index then
-                                 Position.Append (New_Item);
-                                 Exists_New_Positions := True;
-                              end if;
-                           end loop;
+                           declare
+                              First : constant Position_Index
+                                := Position_Index'First;
+                              Last  : constant Position_Vs.Extended_Index
+                                := Position_Vs.Last_Index (New_P);
+                              New_Item : Position_Type;
+                           begin
+                              for Pi in Position_Index range First .. Last loop
+                                 New_Item := Position_Vs.Element (New_P, Pi);
+                                 --  for New_Item of New_P loop
+                                 Text_IO.Put_Line
+                                   ("Will add " & New_Item.X'Img &
+                                      " " & New_Item.Y'Img);
+                                 if not Position_Vs.Contains (Position, New_Item) then
+                                    Position_Vs.Append (Position, New_Item);
+                                    Exists_New_Positions := True;
+                                 end if;
+                              end loop;
+                           end;
                            Basin (I).Size := Pos32 (Position.Length);
                            exit when not Exists_New_Positions;
                         end;
 
-                        for New_Item of New_P loop
-                           --  Text_IO.Put_Line
-                           --    ("Will add " & New_Item.X'Img & " " & New_Item.Y'Img);
-                           Index := Position.Find_Index (New_Item);
-                           if Index = Position_Vs.No_Index then
-                              Position.Append (New_Item);
-                           end if;
-                        end loop;
+                        declare
+                           First : constant Position_Index
+                             := Position_Index'First;
+                              Last  : constant Position_Vs.Extended_Index
+                             := Position_Vs.Last_Index (New_P);
+                           New_Item : Position_Type;
+                        begin
+                           for Pi in Position_Index range First .. Last loop
+                              New_Item := Position_Vs.Element (New_P, Pi);
+                              --  Text_IO.Put_Line
+                              --    ("Will add " & New_Item.X'Img & " " & New_Item.Y'Img);
+                              if not Position_Vs.Contains (Position, New_Item) then
+                                 Position_Vs.Append (Position, New_Item);
+                              end if;
+                           end loop;
+                        end;
                      end loop;
                   end;
                end loop;

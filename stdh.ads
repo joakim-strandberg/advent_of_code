@@ -299,7 +299,6 @@ package Stdh is
 
    end Basic_Bounded_Dynamic_Pools;
 
-
    --  declare
    --     First : constant Vector_Index := Vector_Index'First;
    --     Last  : constant Vectors.Extended_Index
