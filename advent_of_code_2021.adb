@@ -19,6 +19,7 @@ with Ada.Task_Identification;
 
 package body Advent_Of_Code_2021 is
 
+   subtype Int32 is Stda.Types.Int32;
    subtype Nat32 is Stda.Types.Nat32;
    subtype Pos32 is Stda.Types.Pos32;
 
@@ -2258,14 +2259,14 @@ package body Advent_Of_Code_2021 is
          begin
             Text_File_Parser.Read_From_File (Parser);
 
-            Text_IO.Put_Line ("" & Parser.Line (1).all'Length'Img);
-            Text_IO.Put_Line ("Rows" & Parser.Line'Length'Img);
+            Text_IO.Put_Line (Nat32'Image (Parser.Line (1).all'Length));
+            Text_IO.Put_Line ("Rows" & Nat32'Image (Parser.Line'Length));
 
             Height := Initialize_Height (Parser);
 
             for X in X_Type'Range loop
                for Y in Y_Type'Range loop
-                  Text_IO.Put_Line (Height (X, Y)'Img);
+                  Text_IO.Put_Line (Height_Type'Image (Height (X, Y)));
                   if X > X_Type'First then
                      if X < X_Type'Last then
                         if Y > Y_Type'First then
@@ -2278,8 +2279,9 @@ package body Advent_Of_Code_2021 is
                               then
                                  Add_To_Sum (Sum, Height (X, Y));
                                  Text_IO.Put_Line
-                                   ("Found, X" & X'Img & " Y" & Y'Img &
-                                      " " & Height (X, Y)'Img);
+                                   ("Found, X" & X_Type'Image (X) &
+                                      " Y" & Y_Type'Image (Y) &
+                                      " " & Height_Type'Image (Height (X, Y)));
                               end if;
                            else
                               if
@@ -2289,8 +2291,9 @@ package body Advent_Of_Code_2021 is
                               then
                                  Add_To_Sum (Sum, Height (X, Y));
                                  Text_IO.Put_Line
-                                   ("Found, X" & X'Img & " Y" & Y'Img &
-                                      " " & Height (X, Y)'Img);
+                                   ("Found, X" & X_Type'Image (X) &
+                                      " Y" & Y_Type'Image (Y) &
+                                      " " & Height_Type'Image (Height (X, Y)));
                               end if;
                            end if;
                         else
@@ -2300,9 +2303,10 @@ package body Advent_Of_Code_2021 is
                              Height (X, Y) < Height (X + 1, Y)
                            then
                               Add_To_Sum (Sum, Height (X, Y));
-                              Text_IO.Put_Line
-                                ("Found, X" & X'Img & " Y" & Y'Img &
-                                   " " & Height (X, Y)'Img);
+                                 Text_IO.Put_Line
+                                   ("Found, X" & X_Type'Image (X) &
+                                      " Y" & Y_Type'Image (Y) &
+                                      " " & Height_Type'Image (Height (X, Y)));
                            end if;
                         end if;
                      else
@@ -2316,8 +2320,9 @@ package body Advent_Of_Code_2021 is
                               then
                                  Add_To_Sum (Sum, Height (X, Y));
                                  Text_IO.Put_Line
-                                   ("Found, X" & X'Img & " Y" & Y'Img &
-                                      " " & Height (X, Y)'Img);
+                                   ("Found, X" & X_Type'Image (X) &
+                                      " Y" & Y_Type'Image (Y) &
+                                      " " & Height_Type'Image (Height (X, Y)));
                               end if;
                            else
                               --  Y = Y'Last
@@ -2327,9 +2332,9 @@ package body Advent_Of_Code_2021 is
                               then
                                  Add_To_Sum (Sum, Height (X, Y));
                                  Text_IO.Put_Line
-                                   ("Found, X" & X'Img & " Y" & Y'Img &
-                                      " " & Height (X, Y)'Img);
-                              end if;
+                                   ("Found, X" & X_Type'Image (X) &
+                                      " Y" & Y_Type'Image (Y) &
+                                      " " & Height_Type'Image (Height (X, Y)));                              end if;
                            end if;
                         else
                            --  Y = Y'First
@@ -2338,9 +2343,10 @@ package body Advent_Of_Code_2021 is
                              Height (X, Y) < Height (X, Y + 1)
                            then
                               Add_To_Sum (Sum, Height (X, Y));
-                              Text_IO.Put_Line
-                                ("Found, X" & X'Img & " Y" & Y'Img &
-                                   " " & Height (X, Y)'Img);
+                                 Text_IO.Put_Line
+                                   ("Found, X" & X_Type'Image (X) &
+                                      " Y" & Y_Type'Image (Y) &
+                                      " " & Height_Type'Image (Height (X, Y)));
                            end if;
                         end if;
                      end if;
@@ -2349,10 +2355,10 @@ package body Advent_Of_Code_2021 is
                      if Y > Y_Type'First then
                         if Y < Y_Type'Last then
 
-                           Text_IO.Put_Line ("H (X, Y)" & Height (X, Y)'Img);
-                           Text_IO.Put_Line ("H (X, Y + 1)" & Height (X, Y + 1)'Img);
-                           Text_IO.Put_Line ("H (X + 1, Y)" & Height (X + 1, Y)'Img);
-                           Text_IO.Put_Line ("H (X, Y - 1)" & Height (X, Y - 1)'Img);
+                           Text_IO.Put_Line ("H (X, Y)" & Height_Type'Image (Height (X, Y)));
+                           Text_IO.Put_Line ("H (X, Y + 1)" & Height_Type'Image (Height (X, Y + 1)));
+                           Text_IO.Put_Line ("H (X + 1, Y)" & Height_Type'Image (Height (X + 1, Y)));
+                           Text_IO.Put_Line ("H (X, Y - 1)" & Height_Type'Image (Height (X, Y - 1)));
                            if
                              Height (X, Y) < Height (X, Y + 1) and then
                              Height (X, Y) < Height (X + 1, Y) and then
@@ -2360,8 +2366,9 @@ package body Advent_Of_Code_2021 is
                            then
                               Add_To_Sum (Sum, Height (X, Y));
                               Text_IO.Put_Line
-                                ("Found, X" & X'Img & " Y" & Y'Img &
-                                   " " & Height (X, Y)'Img);
+                                ("Found, X" & X_Type'Image (X) &
+                                   " Y" & Y_Type'Image (Y) &
+                                   " " & Height_Type'Image (Height (X, Y)));
                            end if;
                         else
                            if
@@ -2370,8 +2377,9 @@ package body Advent_Of_Code_2021 is
                            then
                               Add_To_Sum (Sum, Height (X, Y));
                               Text_IO.Put_Line
-                                ("Found, X" & X'Img & " Y" & Y'Img &
-                                   " " & Height (X, Y)'Img);
+                                ("Found, X" & X_Type'Image (X) &
+                                   " Y" & Y_Type'Image (Y) &
+                                   " " & Height_Type'Image (Height (X, Y)));
                            end if;
                         end if;
                      else
@@ -2382,14 +2390,14 @@ package body Advent_Of_Code_2021 is
                         then
                            Add_To_Sum (Sum, Height (X, Y));
                            Text_IO.Put_Line
-                             ("Found, X" & X'Img & " Y" & Y'Img &
-                                " " & Height (X, Y)'Img);
-                        end if;
+                             ("Found, X" & X_Type'Image (X) &
+                                " Y" & Y_Type'Image (Y) &
+                                " " & Height_Type'Image (Height (X, Y)));                        end if;
                      end if;
                   end if;
                end loop;
             end loop;
-            Text_IO.Put_Line ("Answer: " & Sum'Img);
+            Text_IO.Put_Line ("Answer: " & Nat32'Image (Sum));
          end Run;
 
       end Part_One;
@@ -2437,8 +2445,8 @@ package body Advent_Of_Code_2021 is
          begin
             Text_File_Parser.Read_From_File (Parser);
 
-            Text_IO.Put_Line (Parser.Line (1).all'Length'Img);
-            Text_IO.Put_Line ("Rows" & Parser.Line'Length'Img);
+            Text_IO.Put_Line (Nat32'Image (Parser.Line (1).all'Length));
+            Text_IO.Put_Line ("Rows" & Nat32'Image (Parser.Line'Length));
 
             Height := Initialize_Height (Parser);
 
@@ -2669,10 +2677,11 @@ package body Advent_Of_Code_2021 is
                      NX : X_Type;
                      NY : Y_Type;
                   begin
-                     Position.Append ((X => Basin (I).X, Y => Basin (I).Y));
+                     Position_Vs.Append (Position,
+                                         (X => Basin (I).X, Y => Basin (I).Y));
 
                      loop
-                        New_P.Clear;
+                        Position_Vs.Clear (New_P);
                         declare
                            First : constant Position_Index
                              := Position_Index'First;
@@ -2683,7 +2692,8 @@ package body Advent_Of_Code_2021 is
                            for Pi in Position_Index range First .. Last loop
                               P := Position_Vs.Element (Position, Pi);
                               Text_IO.Put_Line
-                                ("Iterate over " & P.X'Img & " " & P.Y'Img);
+                                ("Iterate over " & X_Type'Image (P.X) &
+                                   " " & Y_Type'Image (P.Y));
                               if P.X > X_Type'First then
                                  if P.X < X_Type'Last then
                                     if P.Y > Y_Type'First then
@@ -2692,7 +2702,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2701,7 +2711,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y + 1;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2710,7 +2720,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2719,7 +2729,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y - 1;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2728,7 +2738,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2737,7 +2747,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2746,7 +2756,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y - 1;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2756,7 +2766,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2765,7 +2775,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y + 1;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2774,7 +2784,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2787,7 +2797,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2796,7 +2806,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y + 1;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2805,7 +2815,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y - 1;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2815,7 +2825,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2824,7 +2834,7 @@ package body Advent_Of_Code_2021 is
                                           NY := P.Y - 1;
                                           if Height (NX, NY) > Height (P.X, P.Y) then
                                              if Height (NX, NY) < 9 then
-                                                New_P.Append ((X => NX,
+                                                Position_Vs.Append (New_P, (X => NX,
                                                                Y => NY));
                                              end if;
                                           end if;
@@ -2835,7 +2845,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2844,7 +2854,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y + 1;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2858,7 +2868,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y + 1;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2867,7 +2877,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2876,7 +2886,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y - 1;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2885,7 +2895,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2894,7 +2904,7 @@ package body Advent_Of_Code_2021 is
                                        NY := P.Y - 1;
                                        if Height (NX, NY) > Height (P.X, P.Y) then
                                           if Height (NX, NY) < 9 then
-                                             New_P.Append ((X => NX,
+                                             Position_Vs.Append (New_P, (X => NX,
                                                             Y => NY));
                                           end if;
                                        end if;
@@ -2905,7 +2915,7 @@ package body Advent_Of_Code_2021 is
                                     NY := P.Y + 1;
                                     if Height (NX, NY) > Height (P.X, P.Y) then
                                        if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
+                                          Position_Vs.Append (New_P, (X => NX,
                                                          Y => NY));
                                        end if;
                                     end if;
@@ -2914,8 +2924,8 @@ package body Advent_Of_Code_2021 is
                                     NY := P.Y;
                                     if Height (NX, NY) > Height (P.X, P.Y) then
                                        if Height (NX, NY) < 9 then
-                                          New_P.Append ((X => NX,
-                                                         Y => NY));
+                                          Position_Vs.Append (New_P, (X => NX,
+                                                                      Y => NY));
                                        end if;
                                     end if;
                                  end if;
@@ -2923,7 +2933,8 @@ package body Advent_Of_Code_2021 is
                            end loop;
                         end;
 
-                        Text_IO.Put_Line ("New length "  & New_P.Length'Img);
+                        Text_IO.Put_Line
+                          ("New length "  & Nat32'Image (Position_Vs.Length (New_P)));
 
                         declare
                            Exists_New_Positions : Boolean := False;
@@ -2939,15 +2950,15 @@ package body Advent_Of_Code_2021 is
                                  New_Item := Position_Vs.Element (New_P, Pi);
                                  --  for New_Item of New_P loop
                                  Text_IO.Put_Line
-                                   ("Will add " & New_Item.X'Img &
-                                      " " & New_Item.Y'Img);
+                                   ("Will add " & X_Type'Image (New_Item.X) &
+                                      " " & Y_Type'Image (New_Item.Y));
                                  if not Position_Vs.Contains (Position, New_Item) then
                                     Position_Vs.Append (Position, New_Item);
                                     Exists_New_Positions := True;
                                  end if;
                               end loop;
                            end;
-                           Basin (I).Size := Pos32 (Position.Length);
+                           Basin (I).Size := Pos32 (Position_Vs.Length (Position));
                            exit when not Exists_New_Positions;
                         end;
 
@@ -2973,19 +2984,21 @@ package body Advent_Of_Code_2021 is
 
                for I in Basin'Range loop
                   Text_IO.Put_Line
-                    (Basin (I).X'Img & " " & Basin (I).Y'Img &
-                       " has size " & Basin (I).Size'Img);
+                    (X_Type'Image (Basin (I).X) & " " &
+                       Y_Type'Image (Basin (I).Y) &
+                       " has size " & Nat32'Image (Basin (I).Size));
                end loop;
                Sort (Basin);
                Text_IO.Put_Line ("Sorted");
                for I in Basin'Last - 2 .. Basin'Last loop
                   Text_IO.Put_Line
-                    (Basin (I).X'Img & " " & Basin (I).Y'Img &
-                       " has size " & Basin (I).Size'Img);
+                    (X_Type'Image (Basin (I).X) & " " &
+                       Y_Type'Image (Basin (I).Y) &
+                       " has size " & Nat32'Image (Basin (I).Size));
                   Result := Result * Basin (I).Size;
                end loop;
             end;
-            Text_IO.Put_Line ("Answer: " & Result'Img);
+            Text_IO.Put_Line ("Answer: " & Nat32'Image (Result));
          end Run;
 
       end Part_Two;
@@ -3004,10 +3017,10 @@ package body Advent_Of_Code_2021 is
 
             type T is limited private;
 
-            function Kind (State : in out T;
+            function Kind (State : access T;
                            Line  : in     String) return Line_Kind;
 
-            function Calculate_Sum (State : in out T;
+            function Calculate_Sum (State : access T;
                                     Line  : in     String) return Nat32;
 
          private
@@ -3051,7 +3064,7 @@ package body Advent_Of_Code_2021 is
                end case;
             end record;
 
-            function Kind (State : in out T;
+            function Kind (State : access T;
                            Line  : in     String)
                            return Line_Kind
             is
@@ -3117,7 +3130,7 @@ package body Advent_Of_Code_2021 is
             end Kind;
 
             function Calculate_Sum
-              (State : in out T;
+              (State : access T;
                Line  : in     String) return Nat32
             is
                procedure Handle_Illegal_Found (I : Positive) is
@@ -3208,7 +3221,7 @@ package body Advent_Of_Code_2021 is
 
             Corrupt_Line : Corrupt_Line_Array_Ptr;
 
-            State : Local_State.T;
+            State : aliased Local_State.T;
 
             Sum : Nat32 := 0;
 
@@ -3218,7 +3231,7 @@ package body Advent_Of_Code_2021 is
          begin
             Text_File_Parser.Read_From_File (Parser);
             for L in Parser.Line'Range loop
-               if Local_State.Kind (State, Parser.Line (L).all) = Corrupt then
+               if Local_State.Kind (State'Access, Parser.Line (L).all) = Corrupt then
                   Corrupt_Line_Count := Corrupt_Line_Count + 1;
                end if;
             end loop;
@@ -3227,14 +3240,14 @@ package body Advent_Of_Code_2021 is
 
             Index := 1;
             for L in Parser.Line'Range loop
-               if Local_State.Kind (State, Parser.Line (L).all) = Corrupt then
+               if Local_State.Kind (State'Access, Parser.Line (L).all) = Corrupt then
                   Corrupt_Line (Index) := Parser.Line (L);
                   Index := Index + 1;
                end if;
             end loop;
 
             for I in Corrupt_Line'Range loop
-               Sum := Sum + Local_State.Calculate_Sum (State,
+               Sum := Sum + Local_State.Calculate_Sum (State'Access,
                                                        Corrupt_Line (I).all);
             end loop;
             Text_IO.Put_Line ("Answer:" & Nat32'Image (Sum));
