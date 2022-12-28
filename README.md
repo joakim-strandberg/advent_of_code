@@ -122,9 +122,69 @@ or aliasing issues.
 #### How memory leaks has been prevented
 All memory is statically allocated at application startup and there are no
 deallocations of memory during run-time. No deallocations are verified
-by the GNAT compiler by the restriction:
+by the GNAT compiler:
 ```
 pragma Restrictions (No_Dependence => Ada.Unchecked_Deallocation);
 ```
+##### Prevention of memory leaks in Ada83
+Here is an example of an application with memory leak in Ada83
+or MIL-STD-1815 from 1980:
+```
+procedure Demo_Of_Memory_Leak is
+   type Integer_Access is access Integer;
+   I : Integer_Access := new Integer'(5);
+begin
+   null;
+end Demo_Of_Memory_Leak;
+```
+The application allocates an integer in the standard storage pool which is
+usually the heap. At application exit the memory is never deallocated.
+Note that the access-to-object type named Integer_Access only exists locally
+inside the procedure. In Ada83 it is possible to associate the
+access-to-object type with a pool of memory with fixed size that will be
+automatically deallocated at the point when the access-to-object type
+ceases to exist. To specify that a memory pool with a size of 16 bytes are
+to be associated with the Integer_Access type the syntax is
+"for Integer_Access'Storage_Size use 16;". The memory safe application is:
+```
+procedure Demo_Safe_Application is
+   type Integer_Access is access Integer;
+   for Integer_Access'Storage_Size use 16;
+   I : Integer_Access := new Integer'(5);
+begin
+   null;
+end Demo_Safe_Application;
+```
+To make sure an Ada83 application is memory safe, one way to verify it is
+to check that no memory is ever deallocated using Unchecked_Deallocation
+and making sure all defined access-to-object types are used together
+with the 'Storage_Size attribute. Either one can do this manually or develop
+an application that analyzes the Ada source code and verifies it.
 
-#### How risk of aliasing has been prevented
+##### Prevention of memory leaks in Ada95
+In Ada95 the 'Storage_Size attribute was deprecated in favor of using
+Storage pools introduced in the Ada95 standard and is the method used
+in the source code of this repository. Instead of verifying each
+access-to-object type definition is associated with the 'Storage_Size
+attribute, it needs to be verified that each access-to-object type definition
+is instead associated with the 'Storage_Pool attribute. The author Joakim
+Strandberg has manually verified each access-to-object definition is
+associated with the 'Storage_Pool attribute. In addition, the valgrind
+application has been utilized on Linux for this purpose as well.
+
+#### How risk of aliasing has been minimized or prevented
+The SPARK tools can detect any aliasing issue in SPARK code.
+Without such static code analysis support, there is a risk in Ada code that
+aliasing issues may occur. One research done in the 90s suggested that
+the reason Ada applications are more robust compared to applications
+written in other programming languages is that the Ada language is better
+at preventing aliasing issues. However, the risk still exists.
+
+The risk is minimized first by unit tests. If aliasing issues has generated
+unintended machine code there is a chance this is discovered by the unit
+tests. Secondly, AdaControl can detect aliasing issues but not all.
+The rules for aliasing detection by AdaControl is:
+```
+check parameter_aliasing (with_in certain);
+search parameter_aliasing (Possible);
+```
