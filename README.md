@@ -128,6 +128,7 @@ to the subset of Ada called SPARK and which enables verification by a
 toolset from AdaCore using formal methods. The result is ultra-low defect
 software. It is for those who like to use a programming language that
 maximises safety and security guarantees, for example:
+
  - Memory safety. All allocated memory will be deallocated.
    No memory leaks possible. Any aliasing issues are detected.
  - No infinite loops. All loops are mathematically proven to finish iteration
@@ -135,6 +136,7 @@ maximises safety and security guarantees, for example:
  - The Ada/SPARK code is exception free. It will be safe to suppress
    run-time error checking the Ada compiler itself is unable to optimize away.
    Maximum safety enables maximum performance.
+
 It has been possible to use the SPARK tools since 2014. However, the first
 version of Ada came out in 1980 and was described in the MIL-STD-1815
 standard. The first Ada ISO standard is called Ada83 and was released in 1983.
@@ -155,6 +157,14 @@ then.
 
 ## Ada programming language restrictions
 It is here described the subset of the Ada95 standard which has been used.
+
+### Source code is expressed in ASCII
+Modern software today is often written in UTF8. However, in UTF8 there
+may be several different "characters" that look the same but are different
+(different code points). To avoid any confusion and maximize portability,
+the ASCII character set is used to express the Ada source code.
+This does not preclude possibility to develop applications that support UTF8.
+See for example the Std.UTF8 package. The idea is to keep things simple.
 
 ### Filenaming convention
 The filenames follow the 8.3 filenaming convention used in MS-DOS.
@@ -403,14 +413,80 @@ using AdaControl:
 --  No usage of discriminants with default values.
 check declarations (defaulted_discriminant);
 ```
-##### Banning the traditional way to break Ada Type Safety
-The simplest way to break the type system of Ada is using any of the packages:
-```
-Ada.Unchecked_Conversion
-System.Address_To_Access_Conversions
-```
+##### The traditional way to go outside Ada's Type Safety
+A language that greatly inspired the design of the Ada language is Pascal.
+One of the great criticisms of that language is that there was no way
+to circumvent the type system. In Pascal there is no escape.
+When Ada was designed it was therefore important to be able to circumvent
+the type system and that's why Unchecked_Conversion was included in Ada83.
+Using Unchecked_Conversion it is possible to reinterpret the representation
+of an object in memory as an object of another type. The function name
+is prefixed with the word "Unchecked" to indicate it is potentially unsafe
+to use. If Ada was designed today maybe the word "Unsafe" would have been
+used instead.
+
+Another way that circumvents Ada's strict type system is the possibility
+to reinterpret a memory address as an access-to-object type by using
+the package System.Address_To_Access_Conversions and was introduced in Ada95.
+
 It is verified by the GNAT compiler these packages are not used anywhere:
 ```
 pragma Restrictions (No_Dependence => Ada.Unchecked_Conversion);
 pragma Restrictions (No_Dependence => System.Address_To_Access_Conversions);
 ```
+#### Other restrictions
+There is no usage of 'Access or 'Unchecked_Access nor the 'Address attribute.
+This is checked by AdaControl:
+```
+check entities (all 'Address);
+check entities (all 'Access);
+check entities (all 'Unchecked_Access);
+```
+# Biggest design mistakes in the Ada language?
+Two candidates are discriminants with default values and the other is
+the support for streaming.
+## Discriminants with default values
+Consider the declaration of the Variable_String type:
+```
+subtype String_Index is Positive range 1 .. 9;
+type Variable_String (Last : String_Index) is record
+      Text : String (1 .. Last);
+   end record;
+```
+When declaring an instance of the Variable_String type the discriminat Last
+must be given a value:
+```
+   S : Variable_String (5);
+```
+After the declaration of S it is not possible to change the value of the
+discriminant Last. Note also that Last always must be given a value.
+If a value has not been specified by mistake the compiler will generate
+an error message:
+```
+   T : Variable_String;  --  Generates compiler error
+```
+If instead Last is given a default value, it is suddenly OK to declare
+instances without always specifying a value for the discriminant.
+```
+subtype String_Index is Positive range 1 .. 9;
+type Variable_String2 (Last : String_Index := 9) is record
+      Text : String (1 .. Last);
+   end record;
+
+   R : Variable_String2;  -- Is OK, does not generate compiler error
+```
+Not only is it OK to declare instances of the Variable_String2 type but
+it is also possible to change the value of Last after declaration:
+```
+   R := (Last => 3, Text => (1 => 'a', 2 => 'b', 3 => 'c'));
+```
+It means that adding the default value ":= 9" to the discriminant
+completely changes the semantics of the record declaration.
+This seems to contradict the principle of least surprise.
+In addition, the existence of default discriminants introduces complexity
+because there are special cases. For example, when tagged record types were
+introduced in Ada95 they were not allowed to have discriminants with
+default values. In Ada2012 this was relaxed to allow discriminants with
+default values on limited tagged record types. To keep things simple,
+usage of discriminants with default values are avoided in the source code
+of this repository.
