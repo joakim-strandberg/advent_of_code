@@ -1,0 +1,156 @@
+--  To check the rules in this directory:
+--    cd obj_gnat
+--    adactl -r -f ../adacontrol_rules.txt -p ../main.gpr ../main.adb
+--  This will ensure the .ali and .adt files that adacontrol
+--  generates will be generated in the obj_gnat directory.
+
+--  Generics only allowed as top-level (stand-alone) units
+check declarations (library generic);
+
+--  Access types are only allowed to be defined in Stda and Stdb packages
+--  check declarations (ignore "^stda.|^stdb." access_type);
+
+-- No variable in any package spec but may appear in generic package specs
+check declarations (library variable);
+
+ -- Allow only dependency upon the following Ada packages:
+--check dependencies (others, Ada.Text_IO, Ada.Exceptions, Ada.Finalization,
+--                   Ada.Unchecked_Deallocation,
+--                    Ada.Strings.Fixed,
+--                    Stda, Stdb, Aoc2021);
+
+-- But not if the plain name Text_IO is used:
+check dependencies (with, Text_IO);
+
+-- Don't declare subprograms inside a block:
+check declarations (block procedure, block function);
+
+check derivations (from, Standard.Integer);
+-- Types derived from Integer
+
+search derivations (from, standard);
+-- Types derived from a type in Standard, except Standard.Integer
+-- (caught above)
+
+search derivations (from, range, mod);
+-- Types derived from an integer type (signed or modular)
+
+-- warning if derivation depth of tagged types greater than 2
+search derivations (max_parents, 2);
+
+--  Taking an access value on a global entity is never a risk.
+--  But these are dangerous objects to have a local reference to:
+check local_access (Constant, Variable);
+
+--  A local item shall not hide an outer one with the same name
+check local_hiding (strict);
+
+--  Goto statement shall not be used
+check statements (goto);
+
+--  All program units must repeat their name after the "end"
+check style (no_closing_name);
+
+--  "=" and "/=" shall not be used between real types
+check expressions (real_equality);
+
+check exception_propagation (task);
+
+--  All exception handlers reraises the exception or prints a message
+--  to standard out using Ada.Text_IO.Put_Line.
+check silent_exceptions (reraise, Ada.Text_IO.Put_Line);
+
+--  Predefined numeric types of the language shall not be used
+check entities (standard.Integer,
+                standard.short_integer,
+                standard.long_integer,
+                standard.Float,
+                standard.short_float,
+                standard.long_float);
+
+--  Abort statements shall not be used
+check statements (abort);
+
+--  Controls that unchecked conversion is used on types with identical sizes
+check unsafe_unchecked_conversion;
+
+--  Verify all subprograms terminate normally
+check abnormal_function_return;
+
+--  Ascii characters should be used in source code and no trailing spaces
+--  (not sure these rules are detected, trailing spaces in particular)
+check characters (control, trailing_space);
+check characters (not_iso_646);
+
+-- Check that Unchecked_Conversion is instantiated only once
+-- for any pair of arguments:
+check instantiations (ada.unchecked_conversion, =, =);
+
+-- No instantiation of Unchecked_Conversion on private types
+-- (Are these guys cheating with privacy?)
+check instantiations (ada.unchecked_conversion, private);
+
+-- Check all instantiations of Unchecked_Conversion from address
+-- to an integer type:
+check instantiations (ada.unchecked_conversion, system.address, range);
+
+-- Check all instantiations of Unchecked_Conversion from or to String:
+check instantiations (ada.unchecked_conversion, standard.string);
+check instantiations (ada.unchecked_conversion, <>, standard.string);
+
+--  Make sure there are not too many empty lines in the Ada source code
+check max_blank_lines (2);
+
+check max_line_length (80);
+
+--  The max call depth rule triggers exception in the GNAT ASIS
+--  implementation or potentially AdaControl.
+--  check max_call_depth (20);
+
+check parameter_aliasing (with_in certain);
+search parameter_aliasing (Possible);
+
+-- All functions must have parameters and no out or in out
+-- parameters (allowed in Ada 2012):
+-- check parameter_declarations (all_parameters,    min 1, function);
+check parameter_declarations (out_parameters,    max 0, function);
+check parameter_declarations (in_out_parameters, max 0, function);
+
+-- A regular (not protected) procedure with one out parameter
+-- should be replaced by a function
+-- Joakim: No, I don't agree with this rule. It works for the GNAT compiler
+-- on desktop system where secondary stack is dynamic and can grow as needed
+-- to be able to return huge objects in a function. However, the code should
+-- be cross-platform and it cannot be assumed the secondary stack is big
+-- enough to have room for any object. Requires Ada 2012 standard.
+--  check parameter_declarations (single_out_parameter, procedure);
+
+-- No usage of the secondary stack allowed.
+-- Joakim: Usage of the secondary stack is allowed.
+-- It enables the application to use Ada.Exception.Exception_Information (..)
+-- and Ada.Command_Line package subprograms.
+-- check return_type (unconstrained_discriminated, unconstrained_array);
+
+-- Check multiple assignments to the same variable
+check Assignments (repeated);
+
+--  No copying allowed of access-to-object type variables except
+--  for the Unit_Test_Ptr access-to-object type defined in Stdb because
+--  these access-to-object types does not allow allocations in the standard
+--  storage pool and can only refer to library level objects.
+check assignments (access_duplication);
+
+--  No usage of discriminants with default values.
+check declarations (defaulted_discriminant);
+
+--  No usage of the 'Image attribute.
+check entities (all 'Image);
+
+--  No usage of the 'Address attribute.
+check entities (all 'Address);
+
+--  No usage of the 'Access attribute.
+check entities (all 'Access);
+
+--  No usage of the 'Unchecked_Access attribute.
+check entities (all 'Unchecked_Access);
