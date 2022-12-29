@@ -1,0 +1,28 @@
+project Main is
+
+   for Object_Dir  use "obj_gnat";
+   for Source_Dirs use (".", "private");
+   for Exec_Dir    use "bin";
+   for Main        use ("main.adb");
+
+   package Builder is
+      for Executable ("main.adb") use "aoc";
+   end Builder;
+
+   package Compiler is
+      for Switches ("Ada") use
+         ("-g",
+          "-gnata", "-fstack-check",
+          "-fdata-sections", "-ffunction-sections",
+          "-gnatec=" & Main'Project_Dir & "gnat.adc");
+   end Compiler;
+
+   package Binder is
+      for Switches ("Ada") use ("-Es","-static");
+   end Binder;
+
+   package Linker is
+      for Switches ("Ada") use ("-Wl,--gc-sections");
+   end Linker;
+
+end Main;
