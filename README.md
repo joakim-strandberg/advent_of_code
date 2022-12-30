@@ -145,7 +145,7 @@ The filenames indicate which year and day the input data applies to.
 The suffix "t.txt" indicates test data and "r.txt" indicates real data.
 
 The unit tests in this repository is special in the sense that neither
-AUnit nor Ahven is used. The custom made test framework is very simple
+AUnit nor Ahven is used. The custom made test framework is minimalistic
 and does not have all the features present in either AUnit or Ahven
 but gets the job done for writing unit tests. The unit tests are designed
 to only run during elaboration time. The unit tests redirect output from
@@ -352,22 +352,25 @@ overcome the potential stack size limitation.
 #### How risk of aliasing has been minimized or prevented
 The SPARK tools can detect any aliasing issue in SPARK code.
 Without such static code analysis support, there is a risk in Ada code that
-aliasing issues may occur. One research done in the 90s suggested that
-the reason Ada applications are more robust compared to applications
-written in other programming languages is that the Ada language is better
-at preventing aliasing issues. However, the risk still exists.
+aliasing issues may occur. In the conference paper
+"Parameter-Induced Aliasing in Ada" by Wolfgang Gellerich and Erhard Plöderer
+it is suggested that "The rare occurrence of aliasing may be one reason
+for the low error rate frequently reported for Ada programs.".
+Can the the rare occurrence of aliasing be detected or avoided?
 
 The risk is minimized first by unit tests. If aliasing issues has generated
 unintended machine code there is a chance this is discovered by the unit
 tests. Secondly, AdaControl can detect aliasing issues but not all.
+Thirdly, discriminants with default values are not used at all.
 The rules for aliasing detection by AdaControl is:
 ```
 check parameter_aliasing (with_in certain);
 search parameter_aliasing (Possible);
 ```
-AdaControl does not detect any aliasing issues.
-However, it does not detect all possible causes like for example in
-the following article by Florian Weimer.
+AdaControl does not detect any aliasing issues in the source code of this
+repository. However, AdaControl does not detect all possible causes like
+for example is described in the following article by Florian Weimer and
+which indicate it's a good idea to avoid discriminants with default values.
 ##### A Hole in Ada Type Safety
 Here Florian Weimer's article is published in its entirety from:
 ```
