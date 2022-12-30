@@ -122,6 +122,77 @@ Total number of tests:8
 Tests failed:0
 Tests passed:8
 ```
+## Strategy for solving the puzzles
+Each puzzle describes how to solve the puzzle with test data, and then the
+challenge is to solve it with the scaled up or "real" data that is specific
+for each participant in Advent of code. First step in solving a puzzle is
+writing a unit test using the test data. When the unit test passes,
+the puzzle is then solved using the real data.
+
+The files containing the test data and real data are to be found in the bin/
+directory.
+```
+cd bin
+ls
+2021_01r.txt
+2021_02r.txt
+2021_02t.txt
+2021_03r.txt
+2021_03t.txt
+...
+```
+The filenames indicate which year and day the input data applies to.
+The suffix "t.txt" indicates test data and "r.txt" indicates real data.
+
+The unit tests in this repository is special in the sense that neither
+AUnit nor Ahven is used. The custom made test framework is very simple
+and does not have all the features present in either AUnit or Ahven
+but gets the job done for writing unit tests. The unit tests are designed
+to only run during elaboration time. The unit tests redirect output from
+a puzzle to a text file and when solving a puzzle has finished the contents
+of the output file is analyzed for expected output.
+For example, the Ada standard library supports redirecting the output of
+Ada.Text_IO.Put_Line (..) calls from standard out to any text file which
+means that no adjustment has been needed on the Ada code that solves a
+puzzle to put it under test. It's a feature the unit tests for the puzzles
+of Advent of Code depend upon.
+
+Here is an example of how a unit test for a puzzle looks like:
+```
+   package Result_Should_Be_7_Test is
+
+      type Unit_Test is new Test_Suite.Unit_Test with null record;
+
+      procedure Put_Name (Test : Unit_Test);
+      procedure Run      (Test : Unit_Test);
+      procedure Verify   (Test : Unit_Test);
+
+   end Result_Should_Be_7_Test;
+
+   package body Result_Should_Be_7_Test is
+
+      procedure Put_Name (Test : Unit_Test) is
+      begin
+         Put ("Day 01, part 1. Result should be 7");
+      end Put_Name;
+
+      procedure Run (Test : Unit_Test) is
+      begin
+         Run ("2021_01t.txt");
+      end Run;
+
+      procedure Verify (Test : Unit_Test) is
+      begin
+         Test_Suite.Find_In_Standard_Output
+           (Searched_For => "Answer: 7",
+            Location     => (2094655197, -0933542565));
+      end Verify;
+
+      Test : Unit_Test;
+   begin
+      Test_Suite.Run_Test (Test);
+   end Result_Should_Be_7_Test;
+```
 ## Why Ada95?
 If one writes Ada code today in 2022, it would be natural to restrict oneself
 to the subset of Ada called SPARK and which enables verification by a
