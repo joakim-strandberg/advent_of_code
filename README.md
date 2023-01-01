@@ -239,10 +239,11 @@ And here is the corresponding solution to the puzzle:
 ## How to navigate the Ada code
 The code is intended to be navigated using an IDE (Integrated Development
 Environment) like GNAT Studio or ObjectAda. The IDE included with the
-ObjectAda 7.0 compiler from 1996 and more recent IDE:s included
-implement a "Goto definition" functionality.
-All the Ada source code are to be found in the root directory and the private/
-directory. The starting point for navigating the code is in the root directory:
+ObjectAda 7.0 compiler from 1996 and more recent IDE:s include
+"Goto definition" functionality.
+All the Ada source code are to be found in the root directory
+and the private/ directory. The starting point for navigating the code
+is in the root directory:
 ```
 main.adb
 std.ads
