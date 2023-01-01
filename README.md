@@ -151,7 +151,6 @@ The suffix "t.txt" indicates test data and "r.txt" indicates real data.
 
 The unit tests in this repository is special in the sense that neither
 AUnit nor Ahven is used. The custom made test framework is minimalistic
-and does not have all the features present in either AUnit or Ahven
 but gets the job done for writing unit tests. The unit tests are designed
 to only run during elaboration time. The unit tests redirect output from
 a puzzle to a text file and when solving a puzzle has finished the contents
