@@ -162,7 +162,7 @@ puzzle to put it under test. It's a feature the unit tests for the puzzles
 of Advent of Code depend upon.
 
 Here is an example of how a unit test for a puzzle looks like:
-```
+```ada
    package Result_Should_Be_150_Test is
 
       type Unit_Test is new Test_Suite.Unit_Test with null record;
