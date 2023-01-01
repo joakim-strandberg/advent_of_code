@@ -6,13 +6,17 @@ within 10 seconds on 10 years old hardware.
 
 All the source code in this repository can be compiled by any Ada compiler
 that implements the Ada95 standard from 1995.
-The code has been successfully compiled using GNAT Community Edition 2021
-(Windows 10 and Ubuntu 18.04), Janus/Ada 3.2.1 from June 2019 (Windows 10),
-GNAT 3.14p from October 2004 (Windows 10) and GNAT 3.14b on FreeDOS.
-In addition, all the code in this repository can be compiled by the ObjectAda
-7.0 compiler from 1996 on Windows 95 but generates a faulty
+The code has been successfully compiled using:
+ - GNAT Community Edition 2021 (Windows 10 and Ubuntu 18.04)
+ - Janus/Ada 3.2.1 from June 2019 (Windows 10)
+ - GNAT 3.14p from October 2004 (Windows 10)
+ - GNAT 3.14b on FreeDOS.
+ - ObjectAda 7.0 compiler from 1996 on Windows 95 but generates a faulty
 executable (the cause is a bug related to Storage pool usage in the Ada source
 code).
+
+## System requirements
+Requires at least 32-bit CPU and 10MB primary memory.
 
 ## Building the source code
 Building the source code results in an executable which is a
