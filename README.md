@@ -159,7 +159,7 @@ of Advent of Code depend upon.
 
 Here is an example of how a unit test for a puzzle looks like:
 ```
-   package Result_Should_Be_7_Test is
+   package Result_Should_Be_150_Test is
 
       type Unit_Test is new Test_Suite.Unit_Test with null record;
 
@@ -167,31 +167,69 @@ Here is an example of how a unit test for a puzzle looks like:
       procedure Run      (Test : Unit_Test);
       procedure Verify   (Test : Unit_Test);
 
-   end Result_Should_Be_7_Test;
+   end Result_Should_Be_150_Test;
 
-   package body Result_Should_Be_7_Test is
+   package body Result_Should_Be_150_Test is
 
       procedure Put_Name (Test : Unit_Test) is
       begin
-         Put ("Day 01, part 1. Result should be 7");
+         Put ("Day 02, part 1. Result should be 150");
       end Put_Name;
 
       procedure Run (Test : Unit_Test) is
       begin
-         Run ("2021_01t.txt");
+         Run ("2021_02t.txt");
       end Run;
 
       procedure Verify (Test : Unit_Test) is
       begin
          Test_Suite.Find_In_Standard_Output
-           (Searched_For => "Answer: 7",
-            Location     => (2094655197, -0933542565));
+           (Searched_For => "Answer: 150",
+            Location     => (-0471962700, -0020094807));
       end Verify;
 
       Test : Unit_Test;
    begin
       Test_Suite.Run_Test (Test);
-   end Result_Should_Be_7_Test;
+   end Result_Should_Be_150_Test;
+```
+And here is the corresponding solution to the puzzle:
+```
+   type Movement_Type is (Forward, Down, Up);
+
+   package Movement_IO is new Ada.Text_IO.Enumeration_IO (Movement_Type);
+
+   procedure Run (File_Name : String) is
+      Text_File : File_IO.Text_File_With_Finalization;
+      F : Ada.Text_IO.File_Type renames Text_File.Handle;
+
+      X : Nat32 := 0;
+      Y : Nat32 := 0;
+
+      Direction : Movement_Type;
+      Value     : Nat32;
+   begin
+      Open (File => F,
+            Mode => In_File,
+            Name => File_Name);
+      while not End_Of_File (F) loop
+         Movement_IO.Get (File  => F,
+                          Item  => Direction);
+         Nat32_IO.Get (File  => F,
+                       Item  => Value);
+
+         case Direction is
+            when Forward => X := X + Value;
+            when Up      => Y := Y - Value;
+            when Down    => Y := Y + Value;
+         end case;
+      end loop;
+      Close (F);
+
+      Put ("Answer: ");
+      Put (X * Y);
+      New_Line;
+   end Run;
 ```
 ## Why Ada95?
 If one writes Ada code today in 2022, it would be natural to restrict oneself
