@@ -198,7 +198,7 @@ Here is an example of how a unit test for a puzzle looks like:
    end Result_Should_Be_150_Test;
 ```
 And here is the corresponding solution to the puzzle:
-```
+```ada
    type Movement_Type is (Forward, Down, Up);
 
    package Movement_IO is new Ada.Text_IO.Enumeration_IO (Movement_Type);
@@ -248,7 +248,7 @@ main.adb
 std.ads
 ```
 The file main.adb is the application entry point and contains the following:
-```
+```ada
 ...
 procedure Main is
    ...
@@ -268,7 +268,7 @@ end Main;
 To find the solutions for Advent of Code 2021 put the keyboard- or mouse-cursor
 over "Ac21.Solve_Puzzle;" and then activate the "Goto definition"
 function of the IDE. One then navigates to:
-```
+```ada
 --  Solutions for Advent of Code 2021
 package Ac21 is
 
@@ -310,7 +310,7 @@ of the puzzle one is interested in.
 The other file in the root directory is std.ads and gives an overview
 of what's contained in the "standard library" also included
 in this repository.
-```
+```ada
 with Stda;
 pragma Elaborate_All (Stda);
 
@@ -432,7 +432,7 @@ pragma Restrictions (No_Dependence => Ada.Unchecked_Deallocation);
 ##### Prevention of memory leaks in Ada83
 Here is an example of an application with memory leak in Ada83
 or MIL-STD-1815 from 1980:
-```
+```ada
 procedure Demo_Of_Memory_Leak is
    type Integer_Access is access Integer;
    I : Integer_Access := new Integer'(5);
@@ -449,7 +449,7 @@ automatically deallocated at the point when the access-to-object type
 ceases to exist. To specify that a memory pool with a size of 16 bytes are
 to be associated with the Integer_Access type the syntax is
 "for Integer_Access'Storage_Size use 16;". The memory safe application is:
-```
+```ada
 procedure Demo_Safe_Application is
    type Integer_Access is access Integer;
    for Integer_Access'Storage_Size use 16;
@@ -530,14 +530,14 @@ language features can be used to undermine type safety, too.**
 The standard way to show that type safety has been broken in a language
 is to implement a cast function Conversion from any type
 Source to any type Target:
-```
+```ada
 generic
    type Source is private;
    type Target is private;
 function Conversion (S : Source) return Target;
 ```
 This generic function can be used like Ada.Unchecked_Conversion:
-```
+```ada
 with Ada.Text_IO;
 with Ada.Unchecked_Conversion;
 
@@ -560,7 +560,7 @@ end Convert_Test;
 ```
 How can we implement Conversion? It turns out that discriminant records
 with defaults combined with aliasing do the trick:
-```
+```ada
 function Conversion (S : Source) return Target is
    type Source_Wrapper is tagged record
       S : Source;
