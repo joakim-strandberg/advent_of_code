@@ -236,6 +236,116 @@ And here is the corresponding solution to the puzzle:
       New_Line;
    end Run;
 ```
+## How to navigate the Ada code
+The code is intended to be navigated using an IDE (Integrated Development
+Environment) like GNAT Studio or ObjectAda. The IDE included with the
+ObjectAda 7.0 compiler from 1996 and more recent IDE:s included
+implement a "Goto definition" functionality.
+All the Ada source code are to be found in the root directory and the private/
+directory. The starting point for navigating the code is in the root directory:
+```
+main.adb
+std.ads
+```
+The file main.adb is the application entry point and contains the following:
+```
+with Ada.Command_Line;
+with Ac21;
+with Ac22;
+
+procedure Main is
+   function Argument_Count return Natural is
+   begin
+      return Ada.Command_Line.Argument_Count;
+   end Argument_Count;
+
+   function Argument (Number : Positive) return String is
+   begin
+      return Ada.Command_Line.Argument (Number);
+   end Argument;
+begin
+   if Argument_Count > 0 then
+      if Argument (1) = "2021" then
+         Ac21.Solve_Puzzle;
+      elsif Argument (1) = "2022" then
+         Ac22.Solve_Puzzle;
+      end if;
+   end if;
+end Main;
+```
+To find the solutions for Advent of Code 2021 put the keyboard- or mouse-cursor
+over "Ac21.Solve_Puzzle;" and then activate the "Goto definition"
+function of the IDE. One then navigates to:
+```
+--  Solutions for Advent of Code 2021
+package Ac21 is
+
+   procedure Solve_Puzzle;
+   --  The only public subprogram of this package.
+
+private
+
+   package Day_1 is
+      package Part_One is procedure Run; end Part_One;
+      package Part_Two is procedure Run; end Part_Two;
+   end Day_1;
+
+   package Day_2 is
+      package Part_One is procedure Run; end Part_One;
+      package Part_Two is procedure Run; end Part_Two;
+   end Day_2;
+
+   package Day_3 is
+      package Part_One is procedure Run; end Part_One;
+      package Part_Two is procedure Run; end Part_Two;
+   end Day_3;
+
+   package Day_4 is
+      package Part_One is procedure Run; end Part_One;
+      package Part_Two is procedure Run; end Part_Two;
+   end Day_4;
+
+   package Day_5 is
+      package Part_One is procedure Run; end Part_One;
+      package Part_Two is procedure Run; end Part_Two;
+   end Day_5;
+
+end Ac21;
+```
+From here it is easy to quickly navigate to the solution
+of the puzzle one is interested in.
+
+The other file in the root directory is std.ads and gives an overview
+of what's contained in the "standard library" also included
+in this repository.
+```
+with Stda;
+pragma Elaborate_All (Stda);
+
+with Stdb;
+pragma Elaborate_All (Stdb);
+
+--  Std is short for Standard and a nod to the standard library in C++ :-)
+package Std is
+   pragma Elaborate_Body;
+
+   package Types renames Stda.Types;
+   --  Contains the fundamental type definitions Nat32, Pos32, Int32, etc.
+
+   package Conversions renames Stda.Conversions;
+   --  Contains conversion routines between standard types in the Ada standard
+   --  and types defined in Types.
+
+   package File_IO renames Stda.File_IO;
+
+   package String_Split renames Stda.String_Split;
+
+   package Latin_1 renames Stda.Latin_1;
+
+   package UTF8 renames Stda.UTF8;
+
+end Std;
+```
 ## Why Ada95?
 If one writes Ada code today in 2022, it would be natural to restrict oneself
 to the subset of Ada called SPARK and which enables verification by a
