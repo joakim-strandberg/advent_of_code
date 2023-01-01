@@ -17,6 +17,7 @@ code).
 
 ## System requirements
 Requires at least 32-bit CPU and 10MB primary memory.
+Supported operating systems: FreeDOS, Windows, Mac OS X, Linux
 
 ## Building the source code
 Building the source code results in an executable which is a
