@@ -662,3 +662,18 @@ check entities (all 'Address);
 check entities (all 'Access);
 check entities (all 'Unchecked_Access);
 ```
+### Resource management
+Memory is only one type of resource an application needs to handle in
+a safe way. To make sure file handles are not leaked a type
+**Text_File_With_Finalization** is defined in the Std.File_IO package.
+When an instance of that type goes out of scope it makes sure that
+the associated open file is closed. This is to make sure that all open files in
+the application are closed even in the presence of exceptions.
+
+The GNAT compiler generates an exception during run-time if an application
+tries to open an already open file.
+
+# Summary
+Tha Ada code in this repository uses a minimal subset of the full Ada language
+and is cross-compiler and cross-platform. It also demonstrates memory safety
+and safe resource management in general. Thank you for reading!
