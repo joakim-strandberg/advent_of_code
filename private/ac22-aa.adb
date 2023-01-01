@@ -147,8 +147,8 @@ package body Ac22.Aa is
          type Calorie_Array_Ptr is access Calorie_Array;
          for Calorie_Array_Ptr'Storage_Pool use Pool;
 
-         Controlled_File : Std.File_IO.Text_File;
-         File : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
          N : Nat32;
          Current_Line  : Positive_Count;
          Previous_Line : Positive_Count;
@@ -158,27 +158,27 @@ package body Ac22.Aa is
          Calories : Calorie_Array_Ptr;
       begin
          --  Calculate number of elves:
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         Previous_Line := Ada.Text_IO.Line (File);
-         Nat32_IO.Get (File  => File,
+         Previous_Line := Ada.Text_IO.Line (F);
+         Nat32_IO.Get (File  => F,
                        Item  => N);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Nat32_IO.Get (File  => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Nat32_IO.Get (File  => F,
                           Item  => N);
-            Current_Line := Ada.Text_IO.Line (File);
+            Current_Line := Ada.Text_IO.Line (F);
             if Previous_Line + 1 /= Current_Line then
                Number_Of_Elves := Number_Of_Elves + 1;
             end if;
-            Previous_Line := Ada.Text_IO.Line (File);
+            Previous_Line := Ada.Text_IO.Line (F);
             --              Put (N);
             --              New_Line;
             --              Put ("Line ");
             --              Positive_Count_IO.Put (Text_IO.Line (File));
             --              New_Line;
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
          Put ("Number of Elves ");
          Put (Number_Of_Elves);
          New_Line;
@@ -190,20 +190,20 @@ package body Ac22.Aa is
 
          --  Populate calorie array:
          Elf_Index := 1;
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         Previous_Line := Ada.Text_IO.Line (File);
-         Nat32_IO.Get (File  => File,
+         Previous_Line := Ada.Text_IO.Line (F);
+         Nat32_IO.Get (File  => F,
                        Item  => N);
          Calories (Elf_Index) := N;
          Put ("Read value ");
          Put (N);
          New_Line;
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Nat32_IO.Get (File  => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Nat32_IO.Get (File  => F,
                           Item  => N);
-            Current_Line := Ada.Text_IO.Line (File);
+            Current_Line := Ada.Text_IO.Line (F);
             if Previous_Line + 1 /= Current_Line then
                Put ("Elf ");
                Put (Elf_Index);
@@ -215,9 +215,9 @@ package body Ac22.Aa is
             Put (N);
             New_Line;
             Calories (Elf_Index) := Calories (Elf_Index) + N;
-            Previous_Line := Ada.Text_IO.Line (File);
+            Previous_Line := Ada.Text_IO.Line (F);
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
 
          Put_Line ("Calories vector:");
          Elf_Carrying_The_Most := 1;
@@ -337,8 +337,8 @@ package body Ac22.Aa is
          type Calorie_Array_Ptr is access Calorie_Array;
          for Calorie_Array_Ptr'Storage_Pool use Pool;
 
-         Controlled_File : Std.File_IO.Text_File;
-         File : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
          N : Nat32;
          Current_Line  : Positive_Count;
          Previous_Line : Positive_Count;
@@ -350,27 +350,27 @@ package body Ac22.Aa is
          Shall_Continue : Boolean;
       begin
          --  Calculate number of elves:
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         Previous_Line := Ada.Text_IO.Line (File);
-         Nat32_IO.Get (File  => File,
+         Previous_Line := Ada.Text_IO.Line (F);
+         Nat32_IO.Get (File  => F,
                        Item  => N);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Nat32_IO.Get (File  => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Nat32_IO.Get (File  => F,
                           Item  => N);
-            Current_Line := Ada.Text_IO.Line (File);
+            Current_Line := Ada.Text_IO.Line (F);
             if Previous_Line + 1 /= Current_Line then
                Number_Of_Elves := Number_Of_Elves + 1;
             end if;
-            Previous_Line := Ada.Text_IO.Line (File);
+            Previous_Line := Ada.Text_IO.Line (F);
             --              Put (N);
             --              New_Line;
             --              Put ("Line ");
             --              Positive_Count_IO.Put (Text_IO.Line (File));
             --              New_Line;
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
          Put ("Number of Elves ");
          Put (Number_Of_Elves);
          New_Line;
@@ -382,20 +382,20 @@ package body Ac22.Aa is
 
          --  Populate calorie array:
          Elf_Index := 1;
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         Previous_Line := Ada.Text_IO.Line (File);
-         Nat32_IO.Get (File  => File,
+         Previous_Line := Ada.Text_IO.Line (F);
+         Nat32_IO.Get (File  => F,
                        Item  => N);
          Calories (Elf_Index) := N;
          Put ("Read value ");
          Put (N);
          New_Line;
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Nat32_IO.Get (File  => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Nat32_IO.Get (File  => F,
                           Item  => N);
-            Current_Line := Ada.Text_IO.Line (File);
+            Current_Line := Ada.Text_IO.Line (F);
             if Previous_Line + 1 /= Current_Line then
                Put ("Elf ");
                Put (Elf_Index);
@@ -407,9 +407,9 @@ package body Ac22.Aa is
             Put (N);
             New_Line;
             Calories (Elf_Index) := Calories (Elf_Index) + N;
-            Previous_Line := Ada.Text_IO.Line (File);
+            Previous_Line := Ada.Text_IO.Line (F);
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
 
          --  Put_Line ("Calories vector:");
          for I in Calories'Range loop
@@ -593,22 +593,22 @@ package body Ac22.Aa is
       procedure Run (File_Name : String) is
          Pool : Basic_Bounded_Dynamic_Pools.Basic_Dynamic_Pool;
 
-         Controlled_File : Std.File_IO.Text_File;
-         File : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
          Me : Own_Choice;
          Opponent : Opponent_Choice;
          Space : Character;
          Score : Nat32 := 0;
       begin
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Opponent_IO.Get (File => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Opponent_IO.Get (File => F,
                              Item => Opponent);
-            Ada.Text_IO.Get (File => File,
+            Ada.Text_IO.Get (File => F,
                              Item => Space);
-            Own_IO.Get (File => File,
+            Own_IO.Get (File => F,
                         Item => Me);
             case Opponent is
                when A =>
@@ -642,7 +642,7 @@ package body Ac22.Aa is
             --Put (Score);
             --New_Line;
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
          Put ("Answer: ");
          Put (Score);
          New_Line;
@@ -724,23 +724,23 @@ package body Ac22.Aa is
       procedure Run (File_Name : String) is
          Pool : Basic_Bounded_Dynamic_Pools.Basic_Dynamic_Pool;
 
-         Controlled_File : Std.File_IO.Text_File;
-         File : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
          Outcome : Input_Desired_Outcome;
          Opponent : Input_Opponent_Choice;
          Space : Character;
          Score : Nat32 := 0;
          Own_Choice : Own_Player_Choice;
       begin
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Opponent_IO.Get (File => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Opponent_IO.Get (File => F,
                              Item => Opponent);
-            Ada.Text_IO.Get (File => File,
+            Ada.Text_IO.Get (File => F,
                              Item => Space);
-            Own_IO.Get (File => File,
+            Own_IO.Get (File => F,
                         Item => Outcome);
             case To_Opponent_Choice (Opponent) is
                when Rock =>
@@ -789,7 +789,7 @@ package body Ac22.Aa is
             --Put (Score);
             --New_Line;
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
          Put ("Answer: ");
          Put (Score);
          New_Line;
@@ -866,8 +866,8 @@ package body Ac22.Aa is
          type Line_Length_Array_Ptr is access Line_Length_Array;
          for Line_Length_Array_Ptr'Storage_Pool use Pool;
 
-         Controlled_File : Std.File_IO.Text_File;
-         File : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
          C : Character;
          Score : Nat32 := 0;
          Number_Of_Rucksacks : Positive_Count;
@@ -887,29 +887,29 @@ package body Ac22.Aa is
             Value := Value + 1;
          end loop;
 
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Ada.Text_IO.Get (File => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Ada.Text_IO.Get (File => F,
                              Item => C);
-            Number_Of_Rucksacks := Ada.Text_IO.Line (File);
+            Number_Of_Rucksacks := Ada.Text_IO.Line (F);
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
          Put ("Number of rucksacks: ");
          New_Line;
          Positive_Count_IO.Put (Number_Of_Rucksacks);
          L := new Line_Length_Array (1 .. Number_Of_Rucksacks);
 
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Ada.Text_IO.Get (File => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Ada.Text_IO.Get (File => F,
                              Item => C);
-            if Current_Line = Ada.Text_IO.Line (File) then
+            if Current_Line = Ada.Text_IO.Line (F) then
                Number_Of_Items := Number_Of_Items + 1;
-            elsif Current_Line + 1 = Ada.Text_IO.Line (File) then
+            elsif Current_Line + 1 = Ada.Text_IO.Line (F) then
                Put ("Num of items ");
                Put (Number_Of_Items);
                New_Line;
@@ -918,7 +918,7 @@ package body Ac22.Aa is
                     (Constraint_Error'Identity, "");
                end if;
                L (Current_Line) := Number_Of_Items;
-               Current_Line := Ada.Text_IO.Line (File);
+               Current_Line := Ada.Text_IO.Line (F);
                Number_Of_Items := 1;
             else
                Ada.Exceptions.Raise_Exception (Constraint_Error'Identity, "");
@@ -928,9 +928,9 @@ package body Ac22.Aa is
          Put (Number_Of_Items);
          New_Line;
          L (L'Last) := Number_Of_Items;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
 
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
 
@@ -942,7 +942,7 @@ package body Ac22.Aa is
                S2 : String (1 .. Last / 2);
             begin
                for I in S'Range loop
-                  Ada.Text_IO.Get (File => File,
+                  Ada.Text_IO.Get (File => F,
                                    Item => S (I));
                end loop;
                for I in Positive range 1 .. Last / 2 loop
@@ -976,7 +976,7 @@ package body Ac22.Aa is
                end loop;
             end;
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
 
          Put ("Answer: ");
          Put (Score);
@@ -1054,8 +1054,8 @@ package body Ac22.Aa is
          type Line_Length_Array_Ptr is access Line_Length_Array;
          for Line_Length_Array_Ptr'Storage_Pool use Pool;
 
-         Controlled_File : Std.File_IO.Text_File;
-         File : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
          C : Character;
          Score : Nat32 := 0;
          Number_Of_Rucksacks : Positive_Count;
@@ -1075,29 +1075,29 @@ package body Ac22.Aa is
             Value := Value + 1;
          end loop;
 
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Ada.Text_IO.Get (File => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Ada.Text_IO.Get (File => F,
                              Item => C);
-            Number_Of_Rucksacks := Ada.Text_IO.Line (File);
+            Number_Of_Rucksacks := Ada.Text_IO.Line (F);
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
          Put ("Number of rucksacks: ");
          New_Line;
          Positive_Count_IO.Put (Number_Of_Rucksacks);
          L := new Line_Length_Array (1 .. Number_Of_Rucksacks);
 
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Ada.Text_IO.Get (File => File,
+         while not Ada.Text_IO.End_Of_File (F) loop
+            Ada.Text_IO.Get (File => F,
                              Item => C);
-            if Current_Line = Ada.Text_IO.Line (File) then
+            if Current_Line = Ada.Text_IO.Line (F) then
                Number_Of_Items := Number_Of_Items + 1;
-            elsif Current_Line + 1 = Ada.Text_IO.Line (File) then
+            elsif Current_Line + 1 = Ada.Text_IO.Line (F) then
                Put ("Num of items ");
                Put (Number_Of_Items);
                New_Line;
@@ -1106,7 +1106,7 @@ package body Ac22.Aa is
                     (Constraint_Error'Identity, "");
                end if;
                L (Current_Line) := Number_Of_Items;
-               Current_Line := Ada.Text_IO.Line (File);
+               Current_Line := Ada.Text_IO.Line (F);
                Number_Of_Items := 1;
             else
                Ada.Exceptions.Raise_Exception (Constraint_Error'Identity, "");
@@ -1116,13 +1116,13 @@ package body Ac22.Aa is
          Put (Number_Of_Items);
          New_Line;
          L (L'Last) := Number_Of_Items;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
 
          if L'Length mod 3 /= 0 then
             raise Constraint_Error;
          end if;
 
-         Ada.Text_IO.Open (File => File,
+         Ada.Text_IO.Open (File => F,
                            Mode => Ada.Text_IO.In_File,
                            Name => File_Name);
 
@@ -1147,15 +1147,15 @@ package body Ac22.Aa is
                Found : Boolean;
             begin
                for I in S1'Range loop
-                  Ada.Text_IO.Get (File => File,
+                  Ada.Text_IO.Get (File => F,
                                    Item => S1 (I));
                end loop;
                for I in S2'Range loop
-                  Ada.Text_IO.Get (File => File,
+                  Ada.Text_IO.Get (File => F,
                                    Item => S2 (I));
                end loop;
                for I in S3'Range loop
-                  Ada.Text_IO.Get (File => File,
+                  Ada.Text_IO.Get (File => F,
                                    Item => S3 (I));
                end loop;
 
@@ -1186,7 +1186,7 @@ package body Ac22.Aa is
                end loop Outer_Loop;
             end;
          end loop;
-         Ada.Text_IO.Close (File);
+         Ada.Text_IO.Close (F);
 
          Put ("Answer: ");
          Put (Score);

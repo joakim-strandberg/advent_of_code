@@ -7,6 +7,8 @@ package body Ac21.Aa is
 
    package String_Split renames Std.String_Split;
 
+   package File_IO renames Std.File_IO;
+
    package Positive_IO is new Ada.Text_IO.Integer_IO (Positive);
 
    package Conversions renames Std.Conversions;
@@ -50,6 +52,32 @@ package body Ac21.Aa is
          Put (Item);
       end loop;
    end Put_Repeated;
+
+   In_File : constant Ada.Text_IO.File_Mode := Ada.Text_IO.In_File;
+
+   procedure Open (File : in out Ada.Text_IO.File_Type;
+                   Mode : Ada.Text_IO.File_Mode;
+                   Name : String) is
+   begin
+      Ada.Text_IO.Open (File => File,
+                        Mode => Ada.Text_IO.In_File,
+                        Name => Name);
+   end Open;
+
+   procedure Close (File : in out Ada.Text_IO.File_Type) is
+   begin
+      Ada.Text_IO.Close (File);
+   end Close;
+
+   function End_Of_File (File : Ada.Text_IO.File_Type) return Boolean is
+   begin
+      return Ada.Text_IO.End_Of_File (File);
+   end End_Of_File;
+
+   function End_Of_Line (File : Ada.Text_IO.File_Type) return Boolean is
+   begin
+      return Ada.Text_IO.End_Of_Line (File);
+   end End_Of_Line;
 
    ----------------------------------------------------------------------------
    --
@@ -187,27 +215,27 @@ package body Ac21.Aa is
 
             Last : Nat32 := 0;
 
-            Controlled_File : Std.File_IO.Text_File;
-            File : Ada.Text_IO.File_Type renames Controlled_File.File;
+            Text_File : File_IO.Text_File_With_Finalization;
+            F : Ada.Text_IO.File_Type renames Text_File.Handle;
          begin
-            Ada.Text_IO.Open (File => File,
-                              Mode => Ada.Text_IO.In_File,
-                              Name => File_Name);
-            while not Ada.Text_IO.End_Of_File (File) loop
-               Depth_IO.Get (File  => File,
+            Open (File => F,
+                  Mode => In_File,
+                  Name => File_Name);
+            while not End_Of_File (F) loop
+               Depth_IO.Get (File  => F,
                              Item  => Unused_Depth);
                Last := Last + 1;
             end loop;
-            Ada.Text_IO.Close (File);
+            Ada.Text_IO.Close (F);
             Result := new Depth_Array (1 .. Depth_Index (Last));
-            Ada.Text_IO.Open (File => File,
-                              Mode => Ada.Text_IO.In_File,
-                              Name => File_Name);
+            Open (File => F,
+                  Mode => In_File,
+                  Name => File_Name);
             for I in Depth_Index range 1 .. Depth_Index (Last) loop
-               Depth_IO.Get (File  => File,
+               Depth_IO.Get (File  => F,
                              Item  => Result (I));
             end loop;
-            Ada.Text_IO.Close (File);
+            Close (F);
             return Result;
          end Allocate_Array;
 
@@ -295,27 +323,27 @@ package body Ac21.Aa is
 
             Last : Nat32 := 0;
 
-            Controlled_File : Std.File_IO.Text_File;
-            File : Ada.Text_IO.File_Type renames Controlled_File.File;
+            Text_File : File_IO.Text_File_With_Finalization;
+            F : Ada.Text_IO.File_Type renames Text_File.Handle;
          begin
-            Ada.Text_IO.Open (File => File,
-                              Mode => Ada.Text_IO.In_File,
-                              Name => File_Name);
-            while not Ada.Text_IO.End_Of_File (File) loop
-               Depth_IO.Get (File  => File,
+            Open (File => F,
+                  Mode => In_File,
+                  Name => File_Name);
+            while not End_Of_File (F) loop
+               Depth_IO.Get (File  => F,
                              Item  => Unused_Depth);
                Last := Last + 1;
             end loop;
-            Ada.Text_IO.Close (File);
+            Close (F);
             Result := new Depth_Array (1 .. Depth_Index (Last));
-            Ada.Text_IO.Open (File => File,
-                              Mode => Ada.Text_IO.In_File,
-                              Name => File_Name);
+            Open (File => F,
+                  Mode => In_File,
+                  Name => File_Name);
             for I in Depth_Index range 1 .. Depth_Index (Last) loop
-               Depth_IO.Get (File  => File,
+               Depth_IO.Get (File  => F,
                              Item  => Result (I));
             end loop;
-            Ada.Text_IO.Close (File);
+            Close (F);
             return Result;
          end Allocate_Array;
 
@@ -395,8 +423,8 @@ package body Ac21.Aa is
       package Movement_IO is new Ada.Text_IO.Enumeration_IO (Movement_Type);
 
       procedure Run (File_Name : String) is
-         Controlled_File : Std.File_IO.Text_File;
-         File : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
          X : Nat32 := 0;
          Y : Nat32 := 0;
@@ -404,13 +432,13 @@ package body Ac21.Aa is
          Direction : Movement_Type;
          Value     : Nat32;
       begin
-         Ada.Text_IO.Open (File => File,
-                           Mode => Ada.Text_IO.In_File,
-                           Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Movement_IO.Get (File  => File,
+         Open (File => F,
+               Mode => In_File,
+               Name => File_Name);
+         while not End_Of_File (F) loop
+            Movement_IO.Get (File  => F,
                              Item  => Direction);
-            Nat32_IO.Get (File  => File,
+            Nat32_IO.Get (File  => F,
                           Item  => Value);
 
             case Direction is
@@ -419,7 +447,7 @@ package body Ac21.Aa is
                when Down    => Y := Y + Value;
             end case;
          end loop;
-         Ada.Text_IO.Close (File);
+         Close (F);
 
          Put ("Answer: ");
          Put (X * Y);
@@ -474,8 +502,8 @@ package body Ac21.Aa is
       package Movement_IO is new Ada.Text_IO.Enumeration_IO (Movement_Type);
 
       procedure Run (File_Name : String) is
-         Controlled_File : Std.File_IO.Text_File;
-         File : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
          X   : Nat32 := 0;
          Y   : Nat32 := 0;
@@ -484,13 +512,13 @@ package body Ac21.Aa is
          Direction : Movement_Type;
          Value     : Nat32;
       begin
-         Ada.Text_IO.Open (File => File,
-                           Mode => Ada.Text_IO.In_File,
-                           Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File) loop
-            Movement_IO.Get (File  => File,
+         Open (File => F,
+               Mode => In_File,
+               Name => File_Name);
+         while not End_Of_File (F) loop
+            Movement_IO.Get (File  => F,
                              Item  => Direction);
-            Nat32_IO.Get (File  => File,
+            Nat32_IO.Get (File  => F,
                           Item  => Value);
             case Direction is
                when Forward => X := X + Value; Y := Y + Value * Aim;
@@ -498,7 +526,7 @@ package body Ac21.Aa is
                when Down    => Aim := Aim + Value;
             end case;
          end loop;
-         Ada.Text_IO.Close (File);
+         Close (F);
 
          Put ("Answer: ");
          Put (X * Y);
@@ -553,21 +581,21 @@ package body Ac21.Aa is
          --  This function returns an integer of Positive type since
          --  the index type of String types is Positive.
          function Calculate_Line_Length return Positive is
-            Controlled_File : Std.File_IO.Text_File;
-            F : Ada.Text_IO.File_Type renames Controlled_File.File;
+            Text_File : File_IO.Text_File_With_Finalization;
+            F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
             C : Character;
             L : Natural := 0;
          begin
-            Ada.Text_IO.Open (File => F,
-                              Mode => Ada.Text_IO.In_File,
-                              Name => File_Name);
-            while not Ada.Text_IO.End_Of_Line (File => F) loop
+            Open (File => F,
+                  Mode => In_File,
+                  Name => File_Name);
+            while not End_Of_Line (File => F) loop
                Ada.Text_IO.Get (File => F,
                                 Item => C);
                L := L + 1;
             end loop;
-            Ada.Text_IO.Close (File => F);
+            Close (File => F);
             return L;
          end Calculate_Line_Length;
 
@@ -579,8 +607,8 @@ package body Ac21.Aa is
 
          L : String (1 .. Line_Length);
 
-         Controlled_File : Std.File_IO.Text_File;
-         F : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
          One_Count  : Nat32;
          Zero_Count : Nat32;
@@ -598,10 +626,10 @@ package body Ac21.Aa is
             Zero_Count := 0;
             One_Count  := 0;
 
-            Ada.Text_IO.Open (File => F,
-                              Mode => Ada.Text_IO.In_File,
-                              Name => File_Name);
-            while not Ada.Text_IO.End_Of_File (File => F) loop
+            Open (File => F,
+                  Mode => In_File,
+                  Name => File_Name);
+            while not End_Of_File (File => F) loop
                for K in L'Range loop
                   Ada.Text_IO.Get (File => F,
                                    Item => L (K));
@@ -615,7 +643,7 @@ package body Ac21.Aa is
                   raise Constraint_Error;
                end if;
             end loop;
-            Ada.Text_IO.Close (File => F);
+            Close (File => F);
 
             if One_Count > Zero_Count then
                Gamma_Input   (I) := '1';
@@ -697,21 +725,21 @@ package body Ac21.Aa is
          --  This function returns an integer of Positive type since
          --  the index type of String types is Positive.
          function Calculate_Line_Length return Positive is
-            Controlled_File : Std.File_IO.Text_File;
-            F : Ada.Text_IO.File_Type renames Controlled_File.File;
+            Text_File : File_IO.Text_File_With_Finalization;
+            F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
             C : Character;
             L : Natural := 0;
          begin
-            Ada.Text_IO.Open (File => F,
-                              Mode => Ada.Text_IO.In_File,
-                              Name => File_Name);
-            while not Ada.Text_IO.End_Of_Line (File => F) loop
+            Open (File => F,
+                  Mode => In_File,
+                  Name => File_Name);
+            while not End_Of_Line (File => F) loop
                Ada.Text_IO.Get (File => F,
                                 Item => C);
                L := L + 1;
             end loop;
-            Ada.Text_IO.Close (File => F);
+            Close (File => F);
             return L;
          end Calculate_Line_Length;
 
@@ -1023,8 +1051,8 @@ package body Ac21.Aa is
             end loop;
          end Filter_Out;
 
-         Controlled_File : Std.File_IO.Text_File;
-         F : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
          L : String (1 .. Line_Length);
 
@@ -1035,17 +1063,17 @@ package body Ac21.Aa is
          G : Nat32;
          E : Nat32;
       begin
-         Ada.Text_IO.Open (File => F,
-                           Mode => Ada.Text_IO.In_File,
-                           Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File => F) loop
+         Open (File => F,
+               Mode => In_File,
+               Name => File_Name);
+         while not End_Of_File (File => F) loop
             for K in L'Range loop
                Ada.Text_IO.Get (File => F,
                                 Item => L (K));
             end loop;
             V.Append (L);
          end loop;
-         Ada.Text_IO.Close (File => F);
+         Close (File => F);
 
          --  Oxygen
          for I in Column_Number'Range loop
@@ -1066,17 +1094,17 @@ package body Ac21.Aa is
          end loop;
 
          V.Clear;
-         Ada.Text_IO.Open (File => F,
-                           Mode => Ada.Text_IO.In_File,
-                           Name => File_Name);
-         while not Ada.Text_IO.End_Of_File (File => F) loop
+         Open (File => F,
+               Mode => In_File,
+               Name => File_Name);
+         while not End_Of_File (File => F) loop
             for K in L'Range loop
                Ada.Text_IO.Get (File => F,
                                 Item => L (K));
             end loop;
             V.Append (L);
          end loop;
-         Ada.Text_IO.Close (File => F);
+         Close (File => F);
 
          --  CO2
          for I in Column_Number'Range loop
@@ -1453,8 +1481,8 @@ package body Ac21.Aa is
             end if;
          end Boards;
 
-         Controlled_File : Std.File_IO.Text_File;
-         F : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
          Is_Winner_Found : Boolean := False;
          Wb              : Board_Type;
@@ -1467,13 +1495,13 @@ package body Ac21.Aa is
          Put_Line ("Day 04, part one");
          Put_Line ("----------------");
 
-         Ada.Text_IO.Open (File => F,
-                           Mode => Ada.Text_IO.In_File,
-                           Name => File_Name);
+         Open (File => F,
+               Mode => In_File,
+               Name => File_Name);
          Nat32_IO.Get (File => F,
                        Item => N);
          Numbers.Append (New_Item => N);
-         while not Ada.Text_IO.End_Of_Line (File => F) loop
+         while not End_Of_Line (File => F) loop
             Ada.Text_IO.Get (File => F,
                              Item => C);
             Nat32_IO.Get (File => F,
@@ -1483,7 +1511,7 @@ package body Ac21.Aa is
             end if;
             Numbers.Append (New_Item => N);
          end loop;
-         while not Ada.Text_IO.End_Of_File (File => F) loop
+         while not End_Of_File (File => F) loop
             for Row in Row_Type'Range loop
                for Column in Column_Type'Range loop
                   Nat32_IO.Get (File => F,
@@ -1494,7 +1522,7 @@ package body Ac21.Aa is
             end loop;
             Boards.Append (New_Item => B);
          end loop;
-         Ada.Text_IO.Close (File => F);
+         Close (File => F);
 
          Outer_Loop : for I in Number_Index range 1 .. Numbers.Last loop
             for J in Board_Index range 1 .. Boards.Last loop

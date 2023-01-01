@@ -70,15 +70,18 @@ package Stda is
 
    package File_IO is
 
-      --  Instances of this type are expected to be used inside
-      --  bodies of packages (usage of information hiding to increase
-      --  confidence in that file handles are used correctly,
-      --  no file handle resource leakage.
-      type Text_File is new Ada.Finalization.Limited_Controlled with record
-         File : Ada.Text_IO.File_Type;
+      subtype Limited_Controlled is Ada.Finalization.Limited_Controlled;
+
+      --  This type exists to make sure the associated text file is closed
+      --  when the instance of this type goes out of scope in case
+      --  the file is not already closed.
+      --  It is specified in the Ada2005 standard that
+      --  the Ada.Text_IO.File_Type needs finalization.
+      type Text_File_With_Finalization is new Limited_Controlled with record
+         Handle : Ada.Text_IO.File_Type;
       end record;
 
-      procedure Finalize (File : in out Text_File);
+      procedure Finalize (File : in out Text_File_With_Finalization);
 
    end File_IO;
 

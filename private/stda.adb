@@ -59,10 +59,10 @@ package body Stda is
 
    package body File_IO is
 
-      procedure Finalize (File : in out Text_File) is
+      procedure Finalize (File : in out Text_File_With_Finalization) is
       begin
-         if Ada.Text_IO.Is_Open (File.File) then
-            Ada.Text_IO.Close (File.File);
+         if Ada.Text_IO.Is_Open (File.Handle) then
+            Ada.Text_IO.Close (File.Handle);
          end if;
       end Finalize;
 

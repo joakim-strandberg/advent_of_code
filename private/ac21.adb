@@ -6,18 +6,15 @@ pragma Elaborate_All (Std);
 with Ada.Command_Line;
 with Ada.Strings.Fixed;
 with Ada.Text_IO;
-with Stda;
-with Stdb;
-with Ada.Text_IO;
 with Ada.Exceptions;
 with Ac21.Aa;
 with Ac21.Ab;
 
-pragma Elaborate_All (Stdb);
+pragma Elaborate_All (Std);
 
 package body Ac21 is
 
-   use Stda.Types;
+   use Std.Types;
 
    package Acl renames Ada.Command_Line;
 

@@ -4,9 +4,6 @@ pragma Elaborate_All (Stda);
 with Stdb;
 pragma Elaborate_All (Stdb);
 
-with Stdc;
-pragma Elaborate_All (Stdc);
-
 --  Std is short for Standard and a nod to the standard library in C++ :-)
 package Std is
    pragma Elaborate_Body;
@@ -21,6 +18,8 @@ package Std is
    package File_IO renames Stda.File_IO;
 
    package String_Split renames Stda.String_Split;
+
+   package Latin_1 renames Stda.Latin_1;
 
    package UTF8 renames Stda.UTF8;
 

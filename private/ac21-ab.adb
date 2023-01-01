@@ -4,7 +4,6 @@ with Ada.Text_IO;
 with Ac21_Tst;
 with Ada.Command_Line;
 with Ada.Exceptions;
-with Stdb;
 
 package body Ac21.Ab is
 
@@ -139,10 +138,6 @@ package body Ac21.Ab is
             end;
          end loop;
       end Parse_Board_Row;
-
-      --        package Fb is new Containers.Bounded_Vector
-      --          (Element_Type => Board_Type,
-      --           Index_Type   => Board_Index);
 
       procedure Run (File_Name : String) is
          Pool : Basic_Bounded_Dynamic_Pools.Basic_Dynamic_Pool;
@@ -523,8 +518,8 @@ package body Ac21.Ab is
             end if;
          end Fb;
 
-         Controlled_File : Std.File_IO.Text_File;
-         F : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
          Is_Winner_Found : Boolean := False;
          Wb              : Board_Type;  --  Winner board
@@ -722,8 +717,8 @@ package body Ac21.Ab is
          Allocated_Board : Board_Ptr := new Board_Type;
          Board : Board_Type renames Allocated_Board.all;
 
-         Controlled_File : Std.File_IO.Text_File;
-         F : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
          C : Character;
 
@@ -965,8 +960,8 @@ package body Ac21.Ab is
          Allocated_Board : Board_Ptr := new Board_Type;
          Board : Board_Type renames Allocated_Board.all;
 
-         Controlled_File : Std.File_IO.Text_File;
-         F : Ada.Text_IO.File_Type renames Controlled_File.File;
+         Text_File : Std.File_IO.Text_File_With_Finalization;
+         F : Ada.Text_IO.File_Type renames Text_File.Handle;
 
          C : Character;
 
